@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { validateCPF } from "validations-br";
 
 export type MotoristaType = {
 	_id: mongoose.Schema.Types.ObjectId;
@@ -19,7 +20,10 @@ const MotoristaSchema = new mongoose.Schema<MotoristaType>(
 			type: String,
 			required: true,
 			unique: true,
-			match: /^\d{11}$/,
+			validate: {
+				validator: (value: string) => validateCPF(value),
+				message: "CPF de formato inválido",
+			},
 		},
 		cnh: {
 			numero: {

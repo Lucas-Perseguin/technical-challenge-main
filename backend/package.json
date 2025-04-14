@@ -8,7 +8,7 @@
 		"build": "tsc",
 		"start": "node dist/server.js",
 		"dev": "nodemon",
-		"seed": "node src/seeds",
+		"seed": "node src/seed.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],

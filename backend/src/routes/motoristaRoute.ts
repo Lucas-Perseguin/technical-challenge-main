@@ -1,12 +1,12 @@
 import express from "express";
-import motoristaController from "../controllers/motoristaController";
+import motoristaController from "../controllers/motoristaController.js";
 
-const router = express.Router();
+const motoristaRouter = express.Router();
 
-router.post("/", motoristaController.criar);
-router.get("/", motoristaController.listar);
-router.get("/:id", motoristaController.buscarPorId);
-router.put("/:id", motoristaController.atualizar);
-router.delete("/:id", motoristaController.deletar);
+motoristaRouter.post("/", motoristaController.criar);
+motoristaRouter.get("/", motoristaController.listar);
+motoristaRouter.get("/:id", motoristaController.buscarPorId);
+motoristaRouter.put("/:id", motoristaController.atualizar);
+motoristaRouter.delete("/:id", motoristaController.deletar);
 
-export default router;
+export default motoristaRouter;
