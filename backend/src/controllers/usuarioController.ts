@@ -48,6 +48,10 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 }
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
+	if (req.params.id !== req.app.locals._id) {
+		res.sendStatus(403);
+		return;
+	}
 	try {
 		const usuario = await Usuario.findByIdAndUpdate(
 			req.params.id,
@@ -65,6 +69,10 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 }
 
 async function deletar(req: Request, res: Response, next: NextFunction) {
+	if (req.params.id !== req.app.locals._id) {
+		res.sendStatus(403);
+		return;
+	}
 	try {
 		const usuario = await Usuario.findByIdAndDelete(req.params.id);
 		if (usuario) res.status(200).json("Usuário romvido com sucesso");
@@ -84,7 +92,7 @@ async function logar(req: Request, res: Response, next: NextFunction) {
 		else {
 			const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 			const alg = "HS256";
-			const token = await new SignJWT({ _id: usuario._id })
+			const token = await new SignJWT({ _id: usuario.id })
 				.setProtectedHeader({ alg })
 				.setExpirationTime("7d")
 				.sign(secret);

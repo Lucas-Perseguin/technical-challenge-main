@@ -25,7 +25,7 @@ export async function autenticarToken(
 			res.sendStatus(400);
 			return;
 		}
-		req.app.locals = resultado.payload._id;
+		req.app.locals._id = resultado.payload._id;
 		next();
 	} catch (err) {
 		res.sendStatus(401);
