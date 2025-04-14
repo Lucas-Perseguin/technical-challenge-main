@@ -7,7 +7,7 @@ import Usuario from "./models/Usuario.js";
 const motoristas = [
 	{
 		nome: "João Silva",
-		cpf: "11122233344",
+		cpf: "919.708.988-52",
 		cnh: {
 			numero: "CNH001",
 			validade: new Date("2026-12-01"),
@@ -15,7 +15,7 @@ const motoristas = [
 	},
 	{
 		nome: "Maria Oliveira",
-		cpf: "55566677788",
+		cpf: "316.017.798-01",
 		cnh: {
 			numero: "CNH002",
 			validade: new Date("2025-10-15"),
@@ -23,7 +23,7 @@ const motoristas = [
 	},
 	{
 		nome: "Carlos Mendes",
-		cpf: "99988877766",
+		cpf: "657.434.818-81",
 		cnh: {
 			numero: "CNH003",
 			validade: new Date("2027-04-30"),
@@ -34,8 +34,8 @@ const motoristas = [
 const usuario = {
 	nome: "Admin",
 	email: "admin@email.com",
-	cpf: "219.120.438-40",
-	senha: "admin",
+	cpf: "219.120.438-40".replace(/[^0-9]/g, ""),
+	senha: Bcrypt.hashSync("admin", 12),
 };
 
 const seed = async () => {
@@ -49,11 +49,7 @@ const seed = async () => {
 
 		await Usuario.deleteMany();
 		console.log("Coleção Usuários limpa");
-		const senhaHash = Bcrypt.hashSync(usuario.senha, 12);
-		const usuarioCriado = await Usuario.create({
-			...usuario,
-			senha: senhaHash,
-		});
+		const usuarioCriado = await Usuario.create(usuario);
 		console.log("Usuário admin criado com sucesso", usuarioCriado);
 
 		process.exit(0);
