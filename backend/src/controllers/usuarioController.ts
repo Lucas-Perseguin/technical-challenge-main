@@ -86,7 +86,7 @@ async function logar(req: Request, res: Response, next: NextFunction) {
 			const alg = "HS256";
 			const token = await new SignJWT({ _id: usuario._id })
 				.setProtectedHeader({ alg })
-				.setExpirationTime("24h")
+				.setExpirationTime("7d")
 				.sign(secret);
 			res.json({ token });
 		}
