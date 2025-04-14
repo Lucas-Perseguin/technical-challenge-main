@@ -1,8 +1,10 @@
 import express from "express";
 import motoristaController from "../controllers/motoristaController.js";
+import { autenticarToken } from "../middlewares/autenticacaoMiddleware.js";
 
 const motoristaRouter = express.Router();
 
+motoristaRouter.use(autenticarToken);
 motoristaRouter.post("/", motoristaController.criar);
 motoristaRouter.get("/", motoristaController.listar);
 motoristaRouter.get("/:id", motoristaController.buscarPorId);
