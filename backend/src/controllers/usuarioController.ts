@@ -1,5 +1,6 @@
 import Bcrypt from "bcrypt";
 import type { NextFunction, Request, Response } from "express";
+import { SignJWT } from "jose";
 import Usuario from "../models/Usuario.js";
 
 async function criar(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +20,12 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const usuarios = await Usuario.find();
+		const usuarios = await Usuario.find().select([
+			"_id",
+			"cpf",
+			"email",
+			"nome",
+		]);
 		res.json(usuarios);
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
@@ -28,7 +34,12 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 
 async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 	try {
-		const usuario = await Usuario.findById(req.params.id);
+		const usuario = await Usuario.findById(req.params.id).select([
+			"_id",
+			"cpf",
+			"email",
+			"nome",
+		]);
 		if (usuario) res.json(usuario);
 		else res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
@@ -38,10 +49,14 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const usuario = await Usuario.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-			runValidators: true,
-		});
+		const usuario = await Usuario.findByIdAndUpdate(
+			req.params.id,
+			{ $set: { nome: req.body.nome, email: req.body.email } },
+			{
+				new: true,
+				runValidators: true,
+			},
+		).select(["_id", "cpf", "email", "nome"]);
 		if (usuario) res.json(usuario);
 		else res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
@@ -59,11 +74,33 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function logar(req: Request, res: Response, next: NextFunction) {
+	try {
+		const usuario = await Usuario.findOne({
+			cpf: req.body.cpf.replace(/[^0-9]/g, ""),
+		});
+		if (!usuario || !Bcrypt.compareSync(req.body.senha, usuario.senha))
+			res.status(404).json({ erro: "Usuário e/ou senha incorretos" });
+		else {
+			const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+			const alg = "HS256";
+			const token = await new SignJWT({ _id: usuario._id })
+				.setProtectedHeader({ alg })
+				.setExpirationTime("24h")
+				.sign(secret);
+			res.json({ token });
+		}
+	} catch (error: any) {
+		res.status(500).json({ erro: error.message });
+	}
+}
+
 const usuarioController = {
 	criar,
 	listar,
 	buscarPorId,
 	atualizar,
 	deletar,
+	logar,
 };
 export default usuarioController;
