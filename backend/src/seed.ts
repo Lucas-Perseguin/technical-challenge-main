@@ -7,25 +7,25 @@ import Usuario from "./models/Usuario.js";
 const motoristas = [
 	{
 		nome: "João Silva",
-		cpf: "919.708.988-52",
+		cpf: "919.708.988-52".replace(/[^0-9]/g, ""),
 		cnh: {
-			numero: "CNH001",
+			numero: "68405447700",
 			validade: new Date("2026-12-01"),
 		},
 	},
 	{
 		nome: "Maria Oliveira",
-		cpf: "316.017.798-01",
+		cpf: "316.017.798-01".replace(/[^0-9]/g, ""),
 		cnh: {
-			numero: "CNH002",
+			numero: "57319582121",
 			validade: new Date("2025-10-15"),
 		},
 	},
 	{
 		nome: "Carlos Mendes",
-		cpf: "657.434.818-81",
+		cpf: "657.434.818-81".replace(/[^0-9]/g, ""),
 		cnh: {
-			numero: "CNH003",
+			numero: "65927717074",
 			validade: new Date("2027-04-30"),
 		},
 	},

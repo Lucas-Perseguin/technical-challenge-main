@@ -3,7 +3,8 @@ import Motorista from "../models/Motorista.js";
 
 async function criar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const novoMotorista = await Motorista.create(req.body);
+		const cpf = req.body.cpf.replace(/[^0-9]/g, "");
+		const novoMotorista = await Motorista.create({ ...req.body, cpf });
 		res.status(201).json(novoMotorista);
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
@@ -12,8 +13,16 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const motoristas = await Motorista.find();
-		res.json(motoristas);
+		const { page = 1, limit = 20 } = req.query;
+		const motoristas = await Motorista.find({ ...req.query })
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
+			.sort({ createdAt: -1 });
+		const quantidade = await Motorista.countDocuments();
+		res.json({
+			motoristas,
+			paginasTotal: Math.ceil(quantidade / Number(limit)),
+		});
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
@@ -33,7 +42,9 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const motoristaAtualizado = await Motorista.findByIdAndUpdate(
 			req.params.id,
-			req.body,
+			{
+				$set: { nome: req.body.nome, "cnh.validade": req.body.cnh.validade },
+			},
 			{ new: true, runValidators: true },
 		);
 		if (!motoristaAtualizado)

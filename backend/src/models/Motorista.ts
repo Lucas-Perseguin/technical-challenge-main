@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { validateCPF } from "validations-br";
+import { validateCNH, validateCPF } from "validations-br";
 
 export type MotoristaType = {
 	_id: mongoose.Schema.Types.ObjectId;
@@ -30,6 +30,10 @@ const MotoristaSchema = new mongoose.Schema<MotoristaType>(
 				type: String,
 				required: true,
 				unique: true,
+				validate: {
+					validator: (value: string) => validateCNH(value),
+					message: "CNH de formato inválido",
+				},
 			},
 			validade: {
 				type: Date,

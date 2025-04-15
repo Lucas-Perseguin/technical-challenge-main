@@ -20,13 +20,14 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const usuarios = await Usuario.find().select([
-			"_id",
-			"cpf",
-			"email",
-			"nome",
-		]);
-		res.json(usuarios);
+		const { page = 1, limit = 20 } = req.query;
+		const usuarios = await Usuario.find({ ...req.query })
+			.select(["_id", "cpf", "email", "nome"])
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
+			.sort({ createdAt: -1 });
+		const quantidade = await Usuario.countDocuments();
+		res.json({ usuarios, paginasTotal: Math.ceil(quantidade / Number(limit)) });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
