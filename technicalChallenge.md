@@ -51,7 +51,7 @@ Criar uma aplicação para gerenciar frotas e viagens de uma empresa de logísti
 }
 
 ```
-3. Motorista
+3. Viagem
 ```
 {
   _id: ObjectId,
