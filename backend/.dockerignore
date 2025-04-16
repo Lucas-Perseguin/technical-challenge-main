@@ -1,0 +1,7 @@
+/node_modules
+/dist
+yarn.lock
+nodemon.json
+tsconfig.json
+.gitignore
+.env*
