@@ -35,12 +35,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 
 async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 	try {
-		const usuario = await Usuario.findById(req.params.id).select([
-			"_id",
-			"cpf",
-			"email",
-			"nome",
-		]);
+		const usuario = await Usuario.findById(req.params.id).select(["_id", "cpf", "email", "nome"]);
 		if (usuario) res.json(usuario);
 		else res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
@@ -93,10 +88,7 @@ async function logar(req: Request, res: Response, next: NextFunction) {
 		else {
 			const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 			const alg = "HS256";
-			const token = await new SignJWT({ _id: usuario.id })
-				.setProtectedHeader({ alg })
-				.setExpirationTime("7d")
-				.sign(secret);
+			const token = await new SignJWT({ _id: usuario.id }).setProtectedHeader({ alg }).setExpirationTime("7d").sign(secret);
 			res.json({ token });
 		}
 	} catch (error: any) {

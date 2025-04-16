@@ -1,4 +1,4 @@
-import ListaMotoristas from '../components/ListaMotoristas';
+import ListaMotoristas from '@components/ListaMotoristas';
 
 export default function Lista() {
   return (

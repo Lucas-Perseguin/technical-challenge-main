@@ -1,0 +1,74 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"files": {
+		"include": ["./**/*.ts", "./**/*.tsx"]
+	},
+	"organizeImports": {
+		"enabled": true,
+		"include": ["./**/*.ts", "./**/*.tsx"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentWidth": 2,
+		"indentStyle": "tab",
+		"lineWidth": 130,
+		"include": ["./**/*.ts", "./**/*.tsx"]
+	},
+	"javascript": {
+		"formatter": {
+			"enabled": true,
+			"quoteStyle": "double",
+			"quoteProperties": "preserve",
+			"semicolons": "always"
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"include": ["./**/*.ts", "./**/*.tsx"],
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"useExhaustiveDependencies": "warn",
+				"useIsNan": "error",
+				"noUnusedImports": "warn"
+			},
+			"style": {
+				"noParameterAssign": "error",
+				"noUnusedTemplateLiteral": "warn",
+				"noUselessElse": "off",
+				"useCollapsedElseIf": "warn",
+				"useConst": "error",
+				"useExplicitLengthCheck": "off",
+				"useForOf": "warn",
+				"useNamingConvention": {
+					"level": "error",
+					"options": {
+						"strictCase": false
+					}
+				},
+				"useTemplate": "warn",
+				"noNonNullAssertion": "off",
+				"useSelfClosingElements": "error",
+				"useImportType": "warn"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "warn",
+				"noDoubleEquals": "error",
+				"noExplicitAny": "off",
+				"noConsoleLog": "warn"
+			},
+			"complexity": {
+				"noExtraBooleanCast": "warn",
+				"noForEach": "off",
+				"useArrowFunction": "off",
+				"useOptionalChain": "warn"
+			},
+			"a11y": {
+				"useAltText": "warn",
+				"useButtonType": "off",
+				"useKeyWithClickEvents": "off",
+				"useKeyWithMouseEvents": "off"
+			}
+		}
+	}
+}

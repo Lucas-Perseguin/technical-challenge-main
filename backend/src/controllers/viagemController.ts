@@ -15,8 +15,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 		const { page = 1, limit = 20 } = req.query;
 		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
 		for (const [key, value] of Object.entries(req.query)) {
-			if (key !== "page" && key !== "limit" && value)
-				objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
 		}
 		const viagens = await Viagem.find(objetoQuery)
 			.limit(Number(limit))
@@ -34,9 +33,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 
 async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 	try {
-		const viagem = await Viagem.findById(req.params.id)
-			.populate("motorista")
-			.populate("veiculo");
+		const viagem = await Viagem.findById(req.params.id).populate("motorista").populate("veiculo");
 		if (!viagem) res.status(404).json({ erro: "Viagem não encontrada" });
 		else res.json(viagem);
 	} catch (error: any) {
@@ -46,13 +43,8 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const viagemAtualizada = await Viagem.findByIdAndUpdate(
-			req.params.id,
-			req.body,
-			{ new: true, runValidators: true },
-		);
-		if (!viagemAtualizada)
-			res.status(404).json({ erro: "Viagem não encontrada" });
+		const viagemAtualizada = await Viagem.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+		if (!viagemAtualizada) res.status(404).json({ erro: "Viagem não encontrada" });
 		else res.json(viagemAtualizada);
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
@@ -62,24 +54,18 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 async function deletar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const viagemRemovida = await Viagem.findByIdAndDelete(req.params.id);
-		if (!viagemRemovida)
-			res.status(404).json({ erro: "Viagem não encontrada" });
+		if (!viagemRemovida) res.status(404).json({ erro: "Viagem não encontrada" });
 		else res.json({ mensagem: "Viagem removida com sucesso" });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
 }
 
-async function listarViagensDoMotorista(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+async function listarViagensDoMotorista(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { id } = req.params;
 		const viagensDoMotorista = await Viagem.find({ motorista: id });
-		if (viagensDoMotorista.length === 0)
-			res.status(404).json({ erro: "Nenhuma viagem encontrada" });
+		if (viagensDoMotorista.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else res.json(viagensDoMotorista);
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
