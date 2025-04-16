@@ -44,7 +44,7 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 }
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
-	if (req.params.id !== req.app.locals._id || !req.app.locals.admin) {
+	if (req.params.id !== req.app.locals._id && !req.app.locals.admin) {
 		res.sendStatus(403);
 		return;
 	}
@@ -65,7 +65,7 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 }
 
 async function deletar(req: Request, res: Response, next: NextFunction) {
-	if (req.params.id !== req.app.locals._id || !req.app.locals.admin) {
+	if (req.params.id !== req.app.locals._id && !req.app.locals.admin) {
 		res.sendStatus(403);
 		return;
 	}
