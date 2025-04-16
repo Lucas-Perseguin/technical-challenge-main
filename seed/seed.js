@@ -6,6 +6,7 @@ const usuario = {
 	email: process.env.ADMIN_EMAIL,
 	cpf: process.env.ADMIN_CPF.replace(/[^0-9]/g, ""),
 	senha: Bcrypt.hashSync(process.env.ADMIN_SENHA, 12),
+	admin: true,
 };
 
 const UsuarioSchema = new mongoose.Schema(
@@ -14,6 +15,7 @@ const UsuarioSchema = new mongoose.Schema(
 		email: String,
 		cpf: String,
 		senha: String,
+		admin: Boolean,
 	},
 	{ timestamps: true },
 );

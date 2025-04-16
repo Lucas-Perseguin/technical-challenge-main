@@ -44,7 +44,7 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 }
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
-	if (req.params.id !== req.app.locals._id) {
+	if (req.params.id !== req.app.locals._id || !req.app.locals.admin) {
 		res.sendStatus(403);
 		return;
 	}
@@ -65,7 +65,7 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 }
 
 async function deletar(req: Request, res: Response, next: NextFunction) {
-	if (req.params.id !== req.app.locals._id) {
+	if (req.params.id !== req.app.locals._id || !req.app.locals.admin) {
 		res.sendStatus(403);
 		return;
 	}
@@ -88,7 +88,10 @@ async function logar(req: Request, res: Response, next: NextFunction) {
 		else {
 			const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 			const alg = "HS256";
-			const token = await new SignJWT({ _id: usuario.id }).setProtectedHeader({ alg }).setExpirationTime("7d").sign(secret);
+			const token = await new SignJWT({ _id: usuario.id, admin: usuario.admin })
+				.setProtectedHeader({ alg })
+				.setExpirationTime("7d")
+				.sign(secret);
 			res.json({ token });
 		}
 	} catch (error: any) {

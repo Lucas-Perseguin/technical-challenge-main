@@ -1,11 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { jwtVerify } from "jose";
 
-export async function autenticarToken(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+export async function autenticarToken(req: Request, res: Response, next: NextFunction) {
 	const authHeader = req.header("Authorization");
 	if (!authHeader) {
 		res.sendStatus(400);
@@ -25,7 +21,9 @@ export async function autenticarToken(
 			res.sendStatus(400);
 			return;
 		}
+
 		req.app.locals._id = resultado.payload._id;
+		req.app.locals.admin = resultado.payload.admin;
 		next();
 	} catch (err) {
 		res.sendStatus(401);

@@ -7,6 +7,7 @@ export type UsuarioType = {
 	email: string;
 	cpf: string;
 	senha: string;
+	admin: boolean;
 	createdAt: mongoose.Schema.Types.Date;
 	updatedAt: mongoose.Schema.Types.Date;
 };
@@ -35,6 +36,10 @@ const UsuarioSchema = new mongoose.Schema<UsuarioType>(
 		},
 		senha: {
 			type: String,
+			required: true,
+		},
+		admin: {
+			type: Boolean,
 			required: true,
 		},
 	},

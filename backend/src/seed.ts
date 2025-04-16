@@ -8,6 +8,7 @@ const usuario = {
 	email: "admin@email.com",
 	cpf: "219.120.438-40".replace(/[^0-9]/g, ""),
 	senha: Bcrypt.hashSync("admin", 12),
+	admin: true,
 };
 
 const seed = async () => {
