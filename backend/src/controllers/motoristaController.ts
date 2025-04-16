@@ -1,10 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
+import redis from "../config/redis.js";
 import Motorista from "../models/Motorista.js";
+import { deletarKeys } from "../utils/redis.js";
 
 async function criar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const cpf = req.body.cpf.replace(/[^0-9]/g, "");
 		const novoMotorista = await Motorista.create({ ...req.body, cpf });
+		deletarKeys("motoristas:*");
 		res.status(201).json(novoMotorista);
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
@@ -19,10 +22,21 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			if (key !== "page" && key !== "limit" && value)
 				objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
 		}
+		const redisKey = `motoristas:${JSON.stringify({ ...objetoQuery, page, limit })}`;
+		const listaRedis = await redis.get(redisKey);
+		if (listaRedis) {
+			console.log("lista encontrada no redis");
+			res.json({
+				motoristas: JSON.parse(listaRedis),
+				paginasTotal: Math.ceil(JSON.parse(listaRedis).length / Number(limit)),
+			});
+			return;
+		}
 		const motoristas = await Motorista.find(objetoQuery)
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
+		redis.set(redisKey, JSON.stringify(motoristas));
 		const quantidade = await Motorista.countDocuments();
 		res.json({
 			motoristas,
