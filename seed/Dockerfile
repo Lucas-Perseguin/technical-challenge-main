@@ -5,6 +5,4 @@ WORKDIR /app
 COPY . .
 RUN yarn install --frozen-lockfile
 COPY --chown=app:app . /app
-RUN yarn run build
-EXPOSE 4000
-CMD [ "yarn", "run", "start" ]
+CMD [ "yarn", "run", "seed" ]

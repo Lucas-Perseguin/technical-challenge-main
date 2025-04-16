@@ -3,4 +3,3 @@
 yarn.lock
 nodemon.json
 .gitignore
-.env*

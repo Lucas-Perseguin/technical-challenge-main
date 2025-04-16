@@ -7,7 +7,7 @@ import usuarioRouter from "./routes/usuarioRouter.js";
 import veiculoRouter from "./routes/veiculoRouter.js";
 import viagemRouter from "./routes/viagemRouter.js";
 
-connectDb();
+await connectDb();
 
 const app = express();
 app.use(cors());

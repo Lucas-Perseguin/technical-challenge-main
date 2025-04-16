@@ -13,14 +13,30 @@ services:
     ports:
       - '6379:6379'
 
+  seed:
+    build: ./seed
+    image: seed
+    container_name: seed
+    env_file:
+      - ./seed/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/logistica
+    depends_on:
+      - mongo
+
   server:
     build: ./backend
     image: server
     container_name: server
-    ports: -'4000:4000'
-
-  react:
-    build: ./frontend
-    image: react
-    container_name: react
-    ports: -'3000:3000'
+    env_file:
+      - ./backend/.env.production
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/logistica
+      - REDIS_HOST=redis://redis:6379
+      - PORT=4000
+    ports:
+      - '4000:4000'
+    depends_on:
+      - mongo
+      - redis
+      - seed
