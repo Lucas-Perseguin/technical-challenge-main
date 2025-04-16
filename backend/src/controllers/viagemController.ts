@@ -13,7 +13,12 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { page = 1, limit = 20 } = req.query;
-		const viagens = await Viagem.find({ ...req.query })
+		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
+		for (const [key, value] of Object.entries(req.query)) {
+			if (key !== "page" && key !== "limit" && value)
+				objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		}
+		const viagens = await Viagem.find(objetoQuery)
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
@@ -73,7 +78,7 @@ async function listarViagensDoMotorista(
 	try {
 		const { id } = req.params;
 		const viagensDoMotorista = await Viagem.find({ motorista: id });
-		if (!viagensDoMotorista)
+		if (viagensDoMotorista.length === 0)
 			res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else res.json(viagensDoMotorista);
 	} catch (error: any) {

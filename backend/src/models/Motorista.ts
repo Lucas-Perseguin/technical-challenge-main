@@ -1,3 +1,4 @@
+import moment from "moment";
 import mongoose from "mongoose";
 import { validateCNH, validateCPF } from "validations-br";
 
@@ -5,7 +6,7 @@ export type MotoristaType = {
 	_id: mongoose.Schema.Types.ObjectId;
 	nome: string;
 	cpf: string;
-	cnh: { numero: string; valdiade: Date };
+	cnh: { numero: string; validade: Date };
 	createdAt: mongoose.Schema.Types.Date;
 	updatedAt: mongoose.Schema.Types.Date;
 };
@@ -31,8 +32,9 @@ const MotoristaSchema = new mongoose.Schema<MotoristaType>(
 				required: true,
 				unique: true,
 				validate: {
-					validator: (value: string) => validateCNH(value),
-					message: "CNH de formato inválido",
+					validator: (value: string) =>
+						validateCNH(value) && moment(value).isSameOrAfter(moment.now()),
+					message: "CNH de formato inválido ou vencida",
 				},
 			},
 			validade: {
