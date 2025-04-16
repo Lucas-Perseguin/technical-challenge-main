@@ -1,23 +1,11 @@
 import mongoose from "mongoose";
 
-enum TipoVeiculo {
-	Caminhao,
-	Van,
-	Carro,
-	Caminhonete,
-}
-
-enum TipoCapacidade {
-	Kilogramas,
-	Litros,
-}
-
 export type VeiculoType = {
 	_id: mongoose.Schema.Types.ObjectId;
 	modelo: string;
 	placa: string;
-	tipoVeiculo: TipoVeiculo;
-	tipoCapacidade: TipoCapacidade;
+	tipoVeiculo: "Caminhão" | "Van" | "Carro" | "Caminhonete";
+	tipoCapacidade: "Kilogramas" | "Litros";
 	capacidade: number;
 	createdAt: mongoose.Schema.Types.Date;
 	updatedAt: mongoose.Schema.Types.Date;
@@ -35,16 +23,14 @@ const VeiculoSchema = new mongoose.Schema<VeiculoType>(
 			required: true,
 		},
 		tipoVeiculo: {
-			type: Number,
+			type: String,
 			required: true,
-			min: 0,
-			max: 3,
+			enum: ["Caminhão", "Van", "Carro", "Caminhonete"],
 		},
 		tipoCapacidade: {
-			type: Number,
+			type: String,
 			required: true,
-			min: 0,
-			max: 1,
+			enum: ["Kilogramas", "Litros"],
 		},
 		capacidade: {
 			type: Number,

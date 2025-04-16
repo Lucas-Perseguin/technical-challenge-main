@@ -38,7 +38,7 @@ export async function validacoesCriacaoViagem(
 ) {
 	const { status, dataPartida } = req.body;
 
-	if (status !== 0) {
+	if (status !== "Planejada") {
 		res
 			.status(400)
 			.json({ erro: "O status da viagem deve ser 'Planejada' na sua criação" });

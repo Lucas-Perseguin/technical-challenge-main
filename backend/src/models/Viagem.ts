@@ -1,12 +1,5 @@
 import mongoose from "mongoose";
 
-enum Status {
-	Planejada,
-	Andamento,
-	Concluida,
-	Cancelada,
-}
-
 export type Viagemtype = {
 	_id: mongoose.Schema.Types.ObjectId;
 	origem: string;
@@ -15,7 +8,7 @@ export type Viagemtype = {
 	previsaoChegada: Date;
 	motorista: mongoose.Schema.Types.ObjectId;
 	veiculo: mongoose.Schema.Types.ObjectId;
-	status: Status;
+	status: "Planejada" | "Em andamento" | "Concluída" | "Cancelada";
 	createdAt: Date;
 	updatedAt: Date;
 };
@@ -49,8 +42,9 @@ const viagemSchema = new mongoose.Schema<Viagemtype>(
 			required: true,
 		},
 		status: {
-			type: Number,
+			type: String,
 			required: true,
+			enum: ["Planejada", "Em andamento", "Concluída", "Cancelada"],
 		},
 	},
 	{ timestamps: true },
