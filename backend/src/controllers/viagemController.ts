@@ -1,6 +1,4 @@
 import type { NextFunction, Request, Response } from "express";
-import Motorista from "../models/Motorista.js";
-import Veiculo from "../models/Veiculo.js";
 import Viagem from "../models/Viagem.js";
 
 async function criar(req: Request, res: Response, next: NextFunction) {
@@ -31,15 +29,11 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 
 async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 	try {
-		const viagem = await Viagem.findById(req.params.id);
+		const viagem = await Viagem.findById(req.params.id)
+			.populate("motorista")
+			.populate("veiculo");
 		if (!viagem) res.status(404).json({ erro: "Viagem não encontrada" });
-		else {
-			const [motorista, veiculo] = await Promise.all([
-				Motorista.findOne({ _id: viagem.motorista }),
-				Veiculo.findOne({ _id: viagem.veiculo }),
-			]);
-			res.json({ viagem, motorista, veiculo });
-		}
+		else res.json(viagem);
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
@@ -71,12 +65,29 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function listarViagensDoMotorista(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
+	try {
+		const { id } = req.params;
+		const viagensDoMotorista = await Viagem.find({ motorista: id });
+		if (!viagensDoMotorista)
+			res.status(404).json({ erro: "Nenhuma viagem encontrada" });
+		else res.json(viagensDoMotorista);
+	} catch (error: any) {
+		res.status(500).json({ erro: error.message });
+	}
+}
+
 const viagemController = {
 	criar,
 	listar,
 	buscarPorId,
 	atualizar,
 	deletar,
+	listarViagensDoMotorista,
 };
 
 export default viagemController;

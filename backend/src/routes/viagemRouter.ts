@@ -10,5 +10,6 @@ viagemRouter.get("/", viagemController.listar);
 viagemRouter.get("/:id", viagemController.buscarPorId);
 viagemRouter.put("/:id", viagemController.atualizar);
 viagemRouter.delete("/:id", viagemController.deletar);
+viagemRouter.get("/motorista/:id", viagemController.listarViagensDoMotorista);
 
 export default viagemRouter;
