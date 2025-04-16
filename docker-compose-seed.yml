@@ -1,0 +1,23 @@
+services:
+  mongo:
+    extends:
+      file: docker-compose.yml
+      service: mongo
+
+  seed:
+    build: ./seed
+    image: seed
+    container_name: seed
+    env_file:
+      - ./seed/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/logistica
+    depends_on:
+      - mongo
+    networks:
+      - backend_proxy
+
+networks:
+  backend_proxy:
+    external: true
+    name: backend_network

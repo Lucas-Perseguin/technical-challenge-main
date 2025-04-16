@@ -1,28 +1,23 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo
     container_name: mongo
     ports:
       - '27017:27017'
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - backend
 
   redis:
     image: redis
     container_name: redis
     ports:
       - '6379:6379'
-
-  seed:
-    build: ./seed
-    image: seed
-    container_name: seed
-    env_file:
-      - ./seed/.env
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/logistica
-    depends_on:
-      - mongo
+    volumes:
+      - redisdata:/data
+    networks:
+      - backend
 
   server:
     build: ./backend
@@ -39,4 +34,14 @@ services:
     depends_on:
       - mongo
       - redis
-      - seed
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend_network
+    driver: bridge
+
+volumes:
+  - mongodata
+  - redisdata
