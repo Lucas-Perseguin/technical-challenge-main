@@ -1,26 +1,20 @@
 import mongoose from "mongoose";
-
-export type VeiculoType = {
-	_id: mongoose.Schema.Types.ObjectId;
-	modelo: string;
-	placa: string;
-	tipoVeiculo: "Caminhão" | "Van" | "Carro" | "Caminhonete";
-	tipoCapacidade: "Kilogramas" | "Litros";
-	capacidade: number;
-	createdAt: mongoose.Schema.Types.Date;
-	updatedAt: mongoose.Schema.Types.Date;
-};
+import type { VeiculoType } from "../types/veiculoTypes.js";
 
 const VeiculoSchema = new mongoose.Schema<VeiculoType>(
 	{
 		modelo: {
 			type: String,
 			required: true,
+			minlength: 3,
+			maxlength: 60,
 		},
 		placa: {
 			type: String,
 			unique: true,
 			required: true,
+			minlength: 6,
+			maxlength: 12,
 		},
 		tipoVeiculo: {
 			type: String,

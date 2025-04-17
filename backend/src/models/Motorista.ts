@@ -7,6 +7,8 @@ const MotoristaSchema = new mongoose.Schema<MotoristaType>(
 		nome: {
 			type: String,
 			required: true,
+			minlength: 3,
+			maxlength: 60,
 		},
 		cpf: {
 			type: String,
