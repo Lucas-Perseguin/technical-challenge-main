@@ -20,7 +20,7 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	if (!req.app.locals.admin) {
-		res.sendStatus(403);
+		res.status(403).json({ erro: "Permissão negada" });
 		return;
 	}
 	try {
@@ -35,7 +35,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
 		const quantidade = await Usuario.countDocuments();
-		res.json({ usuarios, paginasTotal: Math.ceil(quantidade / Number(limit)) });
+		res.json({ dados: usuarios, paginasTotal: Math.ceil(quantidade / Number(limit)) });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
@@ -53,19 +53,19 @@ async function buscarPorId(req: Request, res: Response, next: NextFunction) {
 
 async function atualizar(req: Request, res: Response, next: NextFunction) {
 	if (req.params.id !== req.app.locals._id && !req.app.locals.admin) {
-		res.sendStatus(403);
+		res.status(403).json({ erro: "Permissão negada" });
 		return;
 	}
 	try {
 		const usuario = await Usuario.findById(req.params.id).select(["_id", "nome", "cpf", "email", "admin"]);
 		if (usuario) {
 			if (req.params.id !== req.app.locals._id && usuario.admin) {
-				res.sendStatus(403);
+				res.status(403).json({ erro: "Permissão negada" });
 				return;
 			}
 			const erros = usuario.$set({ nome: req.body.nome, email: req.body.email }).validateSync();
 			if (erros) {
-				res.sendStatus(400);
+				res.status(400).json({ erro: erros });
 				return;
 			}
 			await usuario.save();
@@ -80,7 +80,7 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 
 async function deletar(req: Request, res: Response, next: NextFunction) {
 	if (req.params.id !== req.app.locals._id && !req.app.locals.admin) {
-		res.sendStatus(403);
+		res.status(403).json({ erro: "Permissão negada" });
 		return;
 	}
 	try {

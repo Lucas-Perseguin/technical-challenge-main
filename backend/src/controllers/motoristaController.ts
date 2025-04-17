@@ -25,7 +25,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 		const listaRedis = await redis.get(redisKey);
 		if (listaRedis) {
 			res.json({
-				motoristas: JSON.parse(listaRedis),
+				dados: JSON.parse(listaRedis),
 				paginasTotal: Math.ceil(JSON.parse(listaRedis).length / Number(limit)),
 			});
 			return;
@@ -37,7 +37,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 		redis.set(redisKey, JSON.stringify(motoristas));
 		const quantidade = await Motorista.countDocuments();
 		res.json({
-			motoristas,
+			dados: motoristas,
 			paginasTotal: Math.ceil(quantidade / Number(limit)),
 		});
 	} catch (error: any) {

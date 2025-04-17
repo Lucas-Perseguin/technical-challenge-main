@@ -25,7 +25,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			.sort({ createdAt: -1 });
 		const quantidade = await Viagem.countDocuments();
 		res.json({
-			viagens,
+			dados: viagens,
 			paginasTotal: Math.ceil(quantidade / Number(limit)),
 		});
 	} catch (error: any) {
