@@ -11,7 +11,7 @@ export type UsuarioType = {
 	updatedAt: mongoose.Schema.Types.Date;
 };
 
-export type CriarUsuarioType = Omit<UsuarioType, "_id" | "createdAt" | "updatedAt" | "admin">;
+export type CriarUsuarioType = Omit<UsuarioType, "_id" | "createdAt" | "updatedAt">;
 
 export type LogarUsuarioType = Pick<CriarUsuarioType, "cpf" | "senha">;
 

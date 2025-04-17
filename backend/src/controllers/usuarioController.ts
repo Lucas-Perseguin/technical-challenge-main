@@ -12,13 +12,17 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 			senha: senhaHash,
 			cpf,
 		});
-		res.status(201).json(novoUsuario);
+		res.status(201).json({ ...novoUsuario, senha: undefined });
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
 	}
 }
 
 async function listar(req: Request, res: Response, next: NextFunction) {
+	if (!req.app.locals.admin) {
+		res.sendStatus(403);
+		return;
+	}
 	try {
 		const { page = 1, limit = 20 } = req.query;
 		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
@@ -75,7 +79,7 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 	}
 	try {
 		const usuario = await Usuario.findByIdAndDelete(req.params.id);
-		if (usuario) res.status(200).json("Usuário romvido com sucesso");
+		if (usuario) res.status(200).json("Usuário removido com sucesso");
 		else res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });

@@ -7,6 +7,7 @@ const criarUsuarioSchema = Joi.object<CriarUsuarioType>({
 	email: Joi.string().email().required(),
 	cpf: Joi.string().custom(validarCPF).required(),
 	senha: Joi.string().min(4).max(40).required(),
+	admin: Joi.bool().required(),
 }).required();
 
 const logarUsuarioSchema = Joi.object<LogarUsuarioType>({
