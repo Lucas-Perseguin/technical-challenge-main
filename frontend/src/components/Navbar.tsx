@@ -1,11 +1,17 @@
-import { ArrowRightEndOnRectangleIcon, BarsArrowDownIcon, BarsArrowUpIcon } from "@heroicons/react/24/solid";
+import {
+	ArrowRightEndOnRectangleIcon,
+	ArrowRightStartOnRectangleIcon,
+	BarsArrowDownIcon,
+	BarsArrowUpIcon,
+	UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import useAuth from "@hooks/useAuth";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
 	const location = useLocation();
-	const { token } = useAuth();
+	const { token, logout } = useAuth();
 
 	const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
 
@@ -20,25 +26,56 @@ export default function Navbar() {
 					className="mx-auto h-8 w-auto"
 				/>
 			</Link>
-			<Link to="/" className={isActive("/")}>
-				Home
+			<Link to="/motoristas" className={isActive("/motoristas")}>
+				Motorista
 			</Link>
-			<Link to="/cadastro" className={isActive("/cadastro")}>
-				Cadastrar Motorista
+			<Link to="/veiculos" className={isActive("/veiculos")}>
+				Veículos
 			</Link>
-			<Link to="/lista" className={isActive("/lista")}>
-				Listar Motoristas
+			<Link to="/viagens" className={isActive("/viagens")}>
+				Viagens
 			</Link>
-			<div className="absolute h-8 w-8 right-4 top-3" onClick={() => setUserDropdownOpen((prev) => !prev)}>
+			<div className="absolute h-8 w-8 right-4 top-3">
 				{!token ? (
 					<Link to="/acessar">
 						<ArrowRightEndOnRectangleIcon className={`size-8 cursor-pointer ${isActive("/entrar")}`} />
 					</Link>
 				) : isUserDropdownOpen ? (
-					<BarsArrowDownIcon className="size-8 cursor-pointer text-gray-700" />
+					<BarsArrowUpIcon
+						className="size-8 cursor-pointer text-blue-600 font-semibold"
+						onClick={() => setUserDropdownOpen((prev) => !prev)}
+					/>
 				) : (
-					<BarsArrowUpIcon className="size-8 cursor-pointer text-blue-600 font-semibold" />
+					<BarsArrowDownIcon
+						className="size-8 cursor-pointer text-gray-700"
+						onClick={() => setUserDropdownOpen((prev) => !prev)}
+					/>
 				)}
+			</div>
+			<div
+				className={`absolute flex flex-col gap-4 text-gray-700 p-4 top-full right-0 transition-all shadow bg-white ${isUserDropdownOpen && token ? "" : "hidden"}`}
+			>
+				<Link to="/usuario" className="cursor-pointer">
+					<div
+						className="cursor-pointer flex items-center justify-end gap-2"
+						onClick={() => {
+							setUserDropdownOpen(false);
+						}}
+					>
+						Minha conta
+						<UserCircleIcon className="size-6" />
+					</div>
+				</Link>
+				<div
+					className="cursor-pointer flex items-center justify-end gap-2"
+					onClick={() => {
+						setUserDropdownOpen(false);
+						logout();
+					}}
+				>
+					Sair
+					<ArrowRightStartOnRectangleIcon className="size-6" />
+				</div>
 			</div>
 		</nav>
 	);

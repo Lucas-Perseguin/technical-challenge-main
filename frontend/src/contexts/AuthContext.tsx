@@ -1,9 +1,13 @@
-import { type ReactNode, createContext, useState } from "react";
+import api from "api";
+import { jwtVerify } from "jose";
+import { type ReactNode, createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
 	token: string | null;
 	setToken: React.Dispatch<React.SetStateAction<string | null>>;
-	login: (token: string) => void;
+	userId: string | null;
+	login: (token: string, remember: boolean) => void;
 	logout: () => void;
 }
 
@@ -14,16 +18,49 @@ interface AuthContextProviderType {
 }
 
 export function AuthContextProvider({ children }: AuthContextProviderType) {
-	const [token, setToken] = useState(localStorage.getItem("token"));
+	const navigate = useNavigate();
 
-	function login(token: string) {
-		localStorage.setItem("token", token);
+	const [token, setToken] = useState(localStorage.getItem("token"));
+	const [userId, setUserId] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (token) {
+			api.interceptors.request.use(
+				(config) => {
+					config.headers.setAuthorization(`Bearer ${token}`);
+					return config;
+				},
+				(error) => {
+					return Promise.reject(error);
+				},
+			);
+			const secret = new TextEncoder().encode(import.meta.env.VITE_JWT_SECRET);
+			jwtVerify(token, secret).then((resultado) => {
+				if (!resultado.payload._id) {
+					return setUserId(null);
+				}
+
+				return setUserId(resultado.payload._id as string);
+			});
+		}
+		return setUserId(null);
+	}, [token]);
+
+	function login(token: string, remember: boolean) {
+		if (remember) {
+			localStorage.setItem("token", token);
+		} else {
+			sessionStorage.setItem("token", token);
+		}
 		setToken(token);
+		navigate("/");
 	}
 
 	function logout() {
 		localStorage.removeItem("token");
+		sessionStorage.removeItem("token");
 		setToken(null);
+		navigate("/acessar");
 	}
 
 	return (
@@ -31,6 +68,7 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
 			value={{
 				token,
 				setToken,
+				userId,
 				logout,
 				login,
 			}}
