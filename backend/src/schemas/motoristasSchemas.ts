@@ -9,14 +9,14 @@ const criarMotoristaSchema = Joi.object<CriarMotoristaType>({
 		validade: Joi.date().required(),
 		numero: Joi.string().custom(validarCNH).required(),
 	}).required(),
-});
+}).required();
 
 const atualizarMotoristaSchema = Joi.object<AtualizarMotoristaType>({
 	nome: Joi.string().min(3).max(60).required(),
 	cnh: Joi.object({
 		validade: Joi.date().required(),
 	}).required(),
-});
+}).required();
 
 const listarMotoristasSchema = Joi.object<ListarMotoristasType>({
 	nome: Joi.string().min(3).max(60),

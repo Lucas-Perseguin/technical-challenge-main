@@ -7,14 +7,14 @@ const criarVeiculoSchema = Joi.object<CriarVeiculoType>({
 	tipoVeiculo: Joi.string().valid("Caminhão", "Carro", "Van", "Caminhonete").required(),
 	tipoCapacidade: Joi.string().valid("Kilogramas", "Litros").required(),
 	capacidade: Joi.number().min(0).required(),
-});
+}).required();
 
 const atualizarVeiculoSchema = Joi.object<AtualizarVeiculoType>({
 	modelo: Joi.string().min(3).max(60).required(),
 	tipoVeiculo: Joi.string().valid("Caminhão", "Carro", "Van", "Caminhonete").required(),
 	tipoCapacidade: Joi.string().valid("Kilogramas", "Litros").required(),
 	capacidade: Joi.number().min(0).required(),
-});
+}).required();
 
 const listarVeiculosSchema = Joi.object<ListarVeiculosType>({
 	modelo: Joi.string().min(3).max(60),

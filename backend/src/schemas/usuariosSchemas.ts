@@ -7,17 +7,17 @@ const criarUsuarioSchema = Joi.object<CriarUsuarioType>({
 	email: Joi.string().email().required(),
 	cpf: Joi.string().custom(validarCPF).required(),
 	senha: Joi.string().min(4).max(40).required(),
-});
+}).required();
 
 const logarUsuarioSchema = Joi.object<LogarUsuarioType>({
 	cpf: Joi.string().custom(validarCPF).required(),
 	senha: Joi.string().min(4).max(40).required(),
-});
+}).required();
 
 const atualizarUsuarioSchema = Joi.object<AtualizarUsuarioType>({
 	nome: Joi.string().min(3).max(60).required(),
 	email: Joi.string().email().required(),
-});
+}).required();
 
 const listarUsuariosSchema = Joi.object<ListarUsuariosType>({
 	cpf: Joi.string().custom(validarCPF),

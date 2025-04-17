@@ -4,9 +4,8 @@ import Motorista from "../models/Motorista.js";
 import Veiculo from "../models/Veiculo.js";
 
 export async function validacoesGeraisViagem(req: Request, res: Response, next: NextFunction) {
-	const { dataPartida, previsaoChegada, motorista: motoristaId } = req.body;
-
-	if (moment(previsaoChegada).isSameOrBefore(dataPartida)) {
+	const { dataPartida = null, previsaoChegada = null, motorista: motoristaId = null } = req.body;
+	if (dataPartida && previsaoChegada && moment(previsaoChegada).isSameOrBefore(dataPartida)) {
 		res.status(400).json({
 			erro: "A previsão de chegada não pode ser anterior ou igual à data de partida",
 		});

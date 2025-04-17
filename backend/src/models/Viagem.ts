@@ -1,19 +1,7 @@
 import mongoose from "mongoose";
+import type { ViagemType } from "../types/viagemTypes.js";
 
-export type Viagemtype = {
-	_id: mongoose.Schema.Types.ObjectId;
-	origem: string;
-	destino: string;
-	dataPartida: Date;
-	previsaoChegada: Date;
-	motorista: mongoose.Schema.Types.ObjectId;
-	veiculo: mongoose.Schema.Types.ObjectId;
-	status: "Planejada" | "Em andamento" | "Concluída" | "Cancelada";
-	createdAt: Date;
-	updatedAt: Date;
-};
-
-const viagemSchema = new mongoose.Schema<Viagemtype>(
+const viagemSchema = new mongoose.Schema<ViagemType>(
 	{
 		origem: {
 			type: String,
@@ -50,5 +38,5 @@ const viagemSchema = new mongoose.Schema<Viagemtype>(
 	{ timestamps: true },
 );
 
-const Viagem = mongoose.model<Viagemtype>("Viagem", viagemSchema);
+const Viagem = mongoose.model<ViagemType>("Viagem", viagemSchema);
 export default Viagem;
