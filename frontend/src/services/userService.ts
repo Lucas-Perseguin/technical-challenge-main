@@ -1,5 +1,5 @@
-import type { LoginInputs } from "@pages/Login";
-import type { RegisterInputs } from "@pages/Register";
+import type { LoginInputs } from "@pages/usuarios/Login";
+import type { RegisterInputs } from "@pages/usuarios/Register";
 import api from "api";
 
 type UserLogin = Omit<LoginInputs, "remember">;
