@@ -24,4 +24,6 @@ export type ListarMotoristasType = {
 	cnh: {
 		numero: string;
 	};
+	page: number;
+	limit: number;
 };
