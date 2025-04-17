@@ -1,14 +1,6 @@
 import mongoose from "mongoose";
 import { validateCNH, validateCPF } from "validations-br";
-
-export type MotoristaType = {
-	_id: mongoose.Schema.Types.ObjectId;
-	nome: string;
-	cpf: string;
-	cnh: { numero: string; validade: Date };
-	createdAt: mongoose.Schema.Types.Date;
-	updatedAt: mongoose.Schema.Types.Date;
-};
+import type { MotoristaType } from "../types/motoristaTypes.js";
 
 const MotoristaSchema = new mongoose.Schema<MotoristaType>(
 	{
