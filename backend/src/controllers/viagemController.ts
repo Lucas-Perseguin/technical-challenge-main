@@ -1,9 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
+import rabbit, { queue } from "../config/rabbit.js";
 import Viagem from "../models/Viagem.js";
 
 async function criar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const novaViagem = await Viagem.create(req.body);
+		rabbit.sendToQueue(queue, Buffer.from(JSON.stringify(novaViagem)));
 		res.status(201).json(novaViagem);
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });

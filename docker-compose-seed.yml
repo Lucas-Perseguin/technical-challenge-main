@@ -1,7 +1,6 @@
 services:
   seed:
     build: ./seed
-    image: seed
     container_name: seed
     env_file:
       - ./seed/.env

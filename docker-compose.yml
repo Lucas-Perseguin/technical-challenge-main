@@ -19,21 +19,53 @@ services:
     networks:
       - backend
 
+  rabbit:
+    image: rabbitmq
+    container_name: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq
+      - rabbitmq-log:/var/log/rabbitmq
+    networks:
+      - backend
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 30s
+      retries: 3
+
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    environment:
+      - RABBIT_URL=amqp://rabbit
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    networks:
+      - backend
+
   server:
     build: ./backend
-    image: server
     container_name: server
     env_file:
       - ./backend/.env.production
     environment:
       - MONGO_URI=mongodb://mongo:27017/logistica
       - REDIS_HOST=redis://redis:6379
+      - RABBIT_URL=amqp://rabbit
       - PORT=4000
     ports:
       - '4000:4000'
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_started
+      redis:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
     networks:
       - backend
 
@@ -45,3 +77,5 @@ networks:
 volumes:
   mongodata:
   redisdata:
+  rabbitmq-lib:
+  rabbitmq-log:
