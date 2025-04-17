@@ -1,23 +1,13 @@
 import mongoose from "mongoose";
 import { validateCPF } from "validations-br";
-
-export type UsuarioType = {
-	_id: mongoose.Schema.Types.ObjectId;
-	nome: string;
-	email: string;
-	cpf: string;
-	senha: string;
-	admin: boolean;
-	createdAt: mongoose.Schema.Types.Date;
-	updatedAt: mongoose.Schema.Types.Date;
-};
+import type { UsuarioType } from "../types/usuarioTypes.js";
 
 const UsuarioSchema = new mongoose.Schema<UsuarioType>(
 	{
 		nome: {
 			type: String,
 			required: true,
-			minlength: 4,
+			minlength: 3,
 			maxlength: 60,
 		},
 		email: {
@@ -37,6 +27,7 @@ const UsuarioSchema = new mongoose.Schema<UsuarioType>(
 		senha: {
 			type: String,
 			required: true,
+			minlength: 4,
 		},
 		admin: {
 			type: Boolean,

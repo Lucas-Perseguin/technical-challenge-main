@@ -3,11 +3,7 @@ import moment from "moment";
 import Motorista from "../models/Motorista.js";
 import Veiculo from "../models/Veiculo.js";
 
-export async function validacoesGeraisViagem(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+export async function validacoesGeraisViagem(req: Request, res: Response, next: NextFunction) {
 	const { dataPartida, previsaoChegada, motorista: motoristaId } = req.body;
 
 	if (moment(previsaoChegada).isSameOrBefore(dataPartida)) {
@@ -33,17 +29,11 @@ export async function validacoesGeraisViagem(
 	next();
 }
 
-export async function validacoesCriacaoViagem(
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+export async function validacoesCriacaoViagem(req: Request, res: Response, next: NextFunction) {
 	const { status, dataPartida, veiculo: veiculoId } = req.body;
 
 	if (status !== "Planejada") {
-		res
-			.status(400)
-			.json({ erro: "O status da viagem deve ser 'Planejada' na sua criação" });
+		res.status(400).json({ erro: "O status da viagem deve ser 'Planejada' na sua criação" });
 		return;
 	}
 

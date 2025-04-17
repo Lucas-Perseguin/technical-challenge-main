@@ -1,7 +1,9 @@
-import "dotenv/config";
 import Bcrypt from "bcrypt";
+import dotenv from "dotenv";
 import { connectDb } from "./config/mongo.js";
 import Usuario from "./models/Usuario.js";
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const usuario = {
 	nome: "Admin",

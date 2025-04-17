@@ -21,7 +21,11 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { page = 1, limit = 20 } = req.query;
-		const usuarios = await Usuario.find({ ...req.query })
+		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
+		for (const [key, value] of Object.entries(req.query)) {
+			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		}
+		const usuarios = await Usuario.find(objetoQuery)
 			.select(["_id", "cpf", "email", "nome"])
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
