@@ -57,16 +57,22 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 		return;
 	}
 	try {
-		const usuario = await Usuario.findByIdAndUpdate(
-			req.params.id,
-			{ $set: { nome: req.body.nome, email: req.body.email } },
-			{
-				new: true,
-				runValidators: true,
-			},
-		).select(["_id", "cpf", "email", "nome"]);
-		if (usuario) res.json(usuario);
-		else res.status(404).json({ erro: "Usuário não encontrado" });
+		const usuario = await Usuario.findById(req.params.id).select(["_id", "nome", "cpf", "email", "admin"]);
+		if (usuario) {
+			if (req.params.id !== req.app.locals._id && usuario.admin) {
+				res.sendStatus(403);
+				return;
+			}
+			const erros = usuario.$set({ nome: req.body.nome, email: req.body.email }).validateSync();
+			if (erros) {
+				res.sendStatus(400);
+				return;
+			}
+			await usuario.save();
+			res.json(usuario);
+			return;
+		}
+		res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
