@@ -24,7 +24,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 		return;
 	}
 	try {
-		const { page = 1, limit = 20 } = req.query;
+		const { page = 1, limit = 10 } = req.query;
 		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
 		for (const [key, value] of Object.entries(req.query)) {
 			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
@@ -35,7 +35,13 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
 		const quantidade = await Usuario.countDocuments();
-		res.json({ dados: usuarios, paginasTotal: Math.ceil(quantidade / Number(limit)) });
+		res.json({
+			dados: usuarios,
+			paginacao: {
+				paginasTotal: Math.ceil(quantidade / Number(limit)),
+				itensTotal: quantidade,
+			},
+		});
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}

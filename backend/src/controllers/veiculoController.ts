@@ -15,17 +15,21 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { page = 1, limit = 20 } = req.query;
+		const { page = 1, limit = 10 } = req.query;
 		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
 		for (const [key, value] of Object.entries(req.query)) {
 			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
 		}
 		const redisKey = `veiculos:${JSON.stringify({ ...objetoQuery, page, limit })}`;
+		const quantidade = await Veiculo.countDocuments();
 		const listaRedis = await redis.get(redisKey);
 		if (listaRedis) {
 			res.json({
 				dados: JSON.parse(listaRedis),
-				paginasTotal: Math.ceil(JSON.parse(listaRedis).length / Number(limit)),
+				paginacao: {
+					paginasTotal: Math.ceil(quantidade / Number(limit)),
+					itensTotal: quantidade,
+				},
 			});
 			return;
 		}
@@ -34,8 +38,13 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
 		redis.set(redisKey, JSON.stringify(veiculos));
-		const quantidade = await Veiculo.countDocuments();
-		res.json({ dados: veiculos, paginasTotal: Math.ceil(quantidade / Number(limit)) });
+		res.json({
+			dados: veiculos,
+			paginacao: {
+				paginasTotal: Math.ceil(quantidade / Number(limit)),
+				itensTotal: quantidade,
+			},
+		});
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
@@ -66,7 +75,10 @@ async function atualizar(req: Request, res: Response, next: NextFunction) {
 			{ new: true, runValidators: true },
 		);
 		if (!veiculoAtualizado) res.status(404).json({ erro: "Veiculo não encontrado" });
-		else res.json(veiculoAtualizado);
+		else {
+			deletarKeys("veiculos:*");
+			res.json(veiculoAtualizado);
+		}
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
 	}
@@ -76,7 +88,10 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const veiculoRemovido = await Veiculo.findByIdAndDelete(req.params.id);
 		if (!veiculoRemovido) res.status(404).json({ erro: "Veiculo não encontrado" });
-		else res.json({ mensagem: "Veiculo removido com sucesso" });
+		else {
+			deletarKeys("veiculos:*");
+			res.json({ mensagem: "Veiculo removido com sucesso" });
+		}
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}

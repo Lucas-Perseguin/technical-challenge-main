@@ -20,7 +20,7 @@ interface AuthContextProviderType {
 export function AuthContextProvider({ children }: AuthContextProviderType) {
 	const navigate = useNavigate();
 
-	const [token, setToken] = useState(localStorage.getItem("token"));
+	const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
 	const [userId, setUserId] = useState<string | null>(null);
 
 	useEffect(() => {

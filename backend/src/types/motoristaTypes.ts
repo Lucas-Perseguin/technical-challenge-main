@@ -21,9 +21,7 @@ export type AtualizarMotoristaType = {
 export type ListarMotoristasType = {
 	nome: string;
 	cpf: string;
-	cnh: {
-		numero: string;
-	};
+	"cnh.numero": string;
 	page: number;
 	limit: number;
 };

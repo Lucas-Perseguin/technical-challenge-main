@@ -18,36 +18,44 @@ export default function Navbar() {
 	const isActive = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-gray-700");
 
 	return (
-		<nav className="bg-white shadow p-4 flex gap-6 justify-center relative">
-			<Link to="/" className="absolute left-4 top-3">
+		<nav className="bg-white shadow p-4 flex gap-6 items-center justify-center relative w-full min-h-14">
+			<Link to="/" className="absolute left-4 top-auto">
 				<img
 					alt="Your Company"
 					src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-					className="mx-auto h-8 w-auto"
+					className="mx-auto h-6 w-auto md:h-8"
 				/>
 			</Link>
-			<Link to="/motoristas" className={isActive("/motoristas")}>
-				Motorista
-			</Link>
-			<Link to="/veiculos" className={isActive("/veiculos")}>
-				Veículos
-			</Link>
-			<Link to="/viagens" className={isActive("/viagens")}>
-				Viagens
-			</Link>
-			<div className="absolute h-8 w-8 right-4 top-3">
+			{token ? (
+				<>
+					<Link to="/motoristas" className={isActive("/motoristas")}>
+						Motorista
+					</Link>
+					<Link to="/veiculos" className={isActive("/veiculos")}>
+						Veículos
+					</Link>
+					<Link to="/viagens" className={isActive("/viagens")}>
+						Viagens
+					</Link>
+				</>
+			) : (
+				<Link to="/" className={isActive("/")}>
+					Página Inicial
+				</Link>
+			)}
+			<div className="absolute h-fit w-fit right-4 top-auto">
 				{!token ? (
 					<Link to="/acessar">
-						<ArrowRightEndOnRectangleIcon className={`size-8 cursor-pointer ${isActive("/entrar")}`} />
+						<ArrowRightEndOnRectangleIcon className={`size-6 md:size-8 cursor-pointer ${isActive("/entrar")}`} />
 					</Link>
 				) : isUserDropdownOpen ? (
 					<BarsArrowUpIcon
-						className="size-8 cursor-pointer text-blue-600 font-semibold"
+						className="size-6 md:size-8 cursor-pointer text-blue-600 font-semibold"
 						onClick={() => setUserDropdownOpen((prev) => !prev)}
 					/>
 				) : (
 					<BarsArrowDownIcon
-						className="size-8 cursor-pointer text-gray-700"
+						className="size-6 md:size-8 cursor-pointer text-gray-700"
 						onClick={() => setUserDropdownOpen((prev) => !prev)}
 					/>
 				)}
