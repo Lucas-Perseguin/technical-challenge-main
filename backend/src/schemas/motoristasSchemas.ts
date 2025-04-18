@@ -21,7 +21,7 @@ const atualizarMotoristaSchema = Joi.object<AtualizarMotoristaType>({
 const listarMotoristasSchema = Joi.object<ListarMotoristasType>({
 	nome: Joi.string().min(3).max(60),
 	cpf: Joi.string().custom(validarCPF),
-	"cnh.numero": Joi.string(),
+	"cnh.numero": Joi.string().custom(validarCNH),
 	page: Joi.string(),
 	limit: Joi.string(),
 });
