@@ -16,6 +16,7 @@ export default function ListarMotoristas() {
 	const [modal, setModal] = useState(<></>);
 	const [paginacao, setPaginacao] = useState<PaginacaoType>({ itensTotal: 0, paginasTotal: 1, page: 1, limit: 10 });
 	const [filtros, setFiltros] = useState("");
+	const [auxDelecao, setAuxDelecao] = useState(0);
 
 	function abrirModal(id: string, indice: number) {
 		setModal(
@@ -24,7 +25,7 @@ export default function ListarMotoristas() {
 				id={id}
 				indice={indice}
 				setModal={setModal}
-				setState={setMotoristas}
+				setState={setAuxDelecao}
 			/>,
 		);
 	}
@@ -40,7 +41,7 @@ export default function ListarMotoristas() {
 		}
 
 		listarMotoristas();
-	}, [paginacao.page, paginacao.limit, filtros]);
+	}, [paginacao.page, paginacao.limit, filtros, auxDelecao]);
 
 	return (
 		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
