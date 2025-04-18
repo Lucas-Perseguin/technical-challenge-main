@@ -17,11 +17,15 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { page = 1, limit = 10 } = req.query;
 		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
+		const objetoRedisKey: { [key: string]: string } = {};
 		for (const [key, value] of Object.entries(req.query)) {
-			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+			if (key !== "page" && key !== "limit" && value) {
+				objetoQuery[key] = { $regex: new RegExp(value as string, "gi") };
+				objetoRedisKey[key] = value as string;
+			}
 		}
-		const redisKey = `veiculos:${JSON.stringify({ ...objetoQuery, page, limit })}`;
-		const quantidade = await Veiculo.countDocuments();
+		const redisKey = `veiculos:${JSON.stringify({ ...objetoRedisKey, page, limit })}`;
+		const quantidade = await Veiculo.countDocuments(objetoQuery);
 		const listaRedis = await redis.get(redisKey);
 		if (listaRedis) {
 			res.json({

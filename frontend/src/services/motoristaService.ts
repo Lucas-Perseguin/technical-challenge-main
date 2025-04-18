@@ -3,7 +3,7 @@ import type { MotoristasType } from "@customTypes/motoristaTypes.js";
 import api from "api";
 
 async function listarMotoristas(query = "") {
-	return (await api.get<ResultadoPaginado<MotoristasType>>(`/motoristas?${query}`)).data;
+	return await api.get<ResultadoPaginado<MotoristasType>>(`/motoristas?${query}`);
 }
 
 async function deletarMotorista(id: string) {
