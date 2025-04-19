@@ -6,16 +6,23 @@ import {
 	UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import useAuth from "@hooks/useAuth";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 	const location = useLocation();
 	const { token, logout } = useAuth();
+	const navigate = useNavigate();
 
 	const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
 
 	const isActive = (path: string) => (location.pathname.split("/")[1] === path ? "text-blue-600 font-semibold" : "text-gray-700");
+
+	useEffect(() => {
+		if (!token && location.pathname !== "/acessar" && location.pathname !== "/") {
+			navigate("/acessar");
+		}
+	}, [location]);
 
 	return (
 		<nav className="bg-white shadow p-4 flex gap-6 items-center justify-center relative w-full min-h-14">
