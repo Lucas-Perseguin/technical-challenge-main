@@ -14,19 +14,8 @@ import ListarVeiculos from "@pages/veiculos/ListarVeiculos";
 import BuscarViagem from "@pages/viagens/BuscarViagem";
 import CadastrarViagem from "@pages/viagens/CadastrarViagem";
 import ListarViagens from "@pages/viagens/ListarViagens";
-import api from "api";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-
-api.interceptors.request.use(
-	(config) => {
-		config.headers.setAuthorization(`Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`);
-		return config;
-	},
-	(error) => {
-		return Promise.reject(error);
-	},
-);
 
 function App() {
 	return (
