@@ -9,8 +9,8 @@ export type ViagemType = {
 	motorista: mongoose.Schema.Types.ObjectId;
 	veiculo: mongoose.Schema.Types.ObjectId;
 	status: "Planejada" | "Em andamento" | "Concluída" | "Cancelada";
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: mongoose.Schema.Types.Date;
+	updatedAt: mongoose.Schema.Types.Date;
 };
 
 export type CriarViagemType = Omit<ViagemType, "_id" | "createdAt" | "updatedAt">;

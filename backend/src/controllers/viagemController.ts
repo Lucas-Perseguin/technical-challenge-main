@@ -22,7 +22,9 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 		const viagens = await Viagem.find(objetoQuery)
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 });
+			.sort({ createdAt: -1 })
+			.populate("veiculo")
+			.populate("motorista");
 		const quantidade = await Viagem.countDocuments();
 		res.json({
 			dados: viagens,

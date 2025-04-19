@@ -4,12 +4,25 @@ import Motorista from "../models/Motorista.js";
 import Veiculo from "../models/Veiculo.js";
 
 export async function validacoesGeraisViagem(req: Request, res: Response, next: NextFunction) {
-	const { dataPartida = null, previsaoChegada = null, motorista: motoristaId = null } = req.body;
-	if (dataPartida && previsaoChegada && moment(previsaoChegada).isSameOrBefore(dataPartida)) {
+	const { dataPartida, previsaoChegada, motorista: motoristaId, veiculo: veiculoId, status } = req.body;
+	const partida = moment(dataPartida);
+	const chegada = moment(previsaoChegada);
+	const hoje = moment().milliseconds(0).seconds(0).minutes(0).hours(9);
+	if (chegada.isBefore(partida)) {
 		res.status(400).json({
-			erro: "A previsão de chegada não pode ser anterior ou igual à data de partida",
+			erro: "A previsão de chegada não pode ser anterior à data de partida",
 		});
 		return;
+	}
+
+	if (status === "Planejada" && partida.isBefore(hoje)) {
+		res.status(400).json({ erro: "A data de partida não pode ser anterior à data de hoje para viagens planejadas" });
+	}
+
+	if ((status === "Em andamento" || status === "Concluída") && partida.isAfter(hoje)) {
+		res
+			.status(400)
+			.json({ erro: "A data de partida não pode ser posterior à data de hoje para viagens em andamento ou concluídas" });
 	}
 
 	const motorista = await Motorista.findById(motoristaId);
@@ -21,24 +34,6 @@ export async function validacoesGeraisViagem(req: Request, res: Response, next: 
 	if (moment(motorista.cnh.validade).isBefore(moment(previsaoChegada))) {
 		res.status(400).json({
 			erro: "A CNH do motorista escolhido estará vencida antes da previsão de chegada",
-		});
-		return;
-	}
-
-	next();
-}
-
-export async function validacoesCriacaoViagem(req: Request, res: Response, next: NextFunction) {
-	const { status, dataPartida, veiculo: veiculoId } = req.body;
-
-	if (status !== "Planejada") {
-		res.status(400).json({ erro: "O status da viagem deve ser 'Planejada' na sua criação" });
-		return;
-	}
-
-	if (moment(dataPartida).isBefore(moment.now())) {
-		res.status(400).json({
-			erro: "A data de partida não pode ser anterior ao momento atual",
 		});
 		return;
 	}

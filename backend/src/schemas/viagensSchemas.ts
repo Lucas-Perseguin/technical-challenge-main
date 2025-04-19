@@ -3,7 +3,7 @@ import type { AtualizarViagemType, CriarViagemType, ListarViagensType } from "..
 
 const criarViagemSchema = Joi.object<CriarViagemType>({
 	origem: Joi.string().min(3).max(60).required(),
-	destino: Joi.string().min(6).max(12).required(),
+	destino: Joi.string().min(3).max(60).required(),
 	dataPartida: Joi.date().required(),
 	previsaoChegada: Joi.date().required(),
 	motorista: Joi.string().required(),
@@ -13,7 +13,7 @@ const criarViagemSchema = Joi.object<CriarViagemType>({
 
 const atualizarViagemSchema = Joi.object<AtualizarViagemType>({
 	origem: Joi.string().min(3).max(60).required(),
-	destino: Joi.string().min(6).max(12).required(),
+	destino: Joi.string().min(3).max(60).required(),
 	dataPartida: Joi.date().required(),
 	previsaoChegada: Joi.date().required(),
 	motorista: Joi.string().required(),
@@ -23,7 +23,7 @@ const atualizarViagemSchema = Joi.object<AtualizarViagemType>({
 
 const listarViagensSchema = Joi.object<ListarViagensType>({
 	origem: Joi.string().min(3).max(60),
-	destino: Joi.string().min(6).max(12),
+	destino: Joi.string().min(3).max(60),
 	status: Joi.string().valid("Planejada", "Em andamento", "Concluída", "Cancelada"),
 	page: Joi.number(),
 	limit: Joi.number(),
