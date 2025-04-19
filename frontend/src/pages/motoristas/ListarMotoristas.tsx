@@ -41,7 +41,7 @@ export default function ListarMotoristas() {
 					return { ...prev, itensTotal: resposta.paginacao.itensTotal, paginasTotal: resposta.paginacao.paginasTotal };
 				});
 			} catch (erro: any) {
-				toast.error(erro.response.data);
+				toast.error(erro.response.data.erro || erro.response.data);
 			}
 		}
 

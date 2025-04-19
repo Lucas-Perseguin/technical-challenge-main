@@ -14,3 +14,10 @@ export type ListarMotoristasFiltrosType = {
 	page?: number;
 	limit?: number;
 };
+
+export type EditarMotoristaType = {
+	nome: string;
+	cnh: {
+		validade: string;
+	};
+};
