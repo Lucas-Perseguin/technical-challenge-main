@@ -54,7 +54,7 @@ export default function BuscarMotorista() {
 	}, [id]);
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
+		<div className="w-full flex flex-col items-center pt-6 min-h-[calc(100vh-96px)] bg-gray-100">
 			<p className="text-xl md:text-2xl font-semibold mb-5">Visualizar e editar motorista</p>
 			<div className="max-w-[calc(100%-2rem)] w-60 relative">
 				<label htmlFor="nome" className="block text-sm/6 font-medium">

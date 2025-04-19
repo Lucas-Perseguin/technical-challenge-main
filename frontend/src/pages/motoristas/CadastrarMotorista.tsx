@@ -8,7 +8,6 @@ export default function CadastrarMotorista() {
 	const {
 		register,
 		handleSubmit,
-		reset,
 		control,
 		formState: { errors },
 	} = useForm<Omit<MotoristasType, "_id" | "createdAt" | "updatedAt">>();

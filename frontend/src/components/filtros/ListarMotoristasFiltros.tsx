@@ -11,6 +11,7 @@ export default function ListarMotoristasFiltros({ setFiltros }: ListarMorotorist
 		register,
 		handleSubmit,
 		control,
+		reset,
 		formState: { errors },
 	} = useForm<Omit<ListarMotoristasFiltrosType, "page" | "limit">>();
 
@@ -86,9 +87,14 @@ export default function ListarMotoristasFiltros({ setFiltros }: ListarMorotorist
 				/>
 				<p className="text-red-700 text-sm absolute -bottom-5 left-0 text-nowrap">{errors.cnh?.numero?.message}</p>
 			</div>
-			<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer">
-				Filtrar
-			</button>
+			<div className="flex gap-2">
+				<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer">
+					Filtrar
+				</button>
+				<button type="button" onClick={() => reset()} className="px-4 py-2 rounded bg-red-600 text-white cursor-pointer">
+					Limpar
+				</button>
+			</div>
 		</form>
 	);
 }

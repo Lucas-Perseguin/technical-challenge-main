@@ -1,4 +1,4 @@
-import ModalDeletar from "@components/Modal";
+import ModalDeletar from "@components/ModalDeletar";
 import Paginacao from "@components/Paginacao";
 import ListarMotoristasFiltros from "@components/filtros/ListarMotoristasFiltros";
 import type { PaginacaoType } from "@customTypes/globalTypes";
@@ -50,12 +50,12 @@ export default function ListarMotoristas() {
 
 	return (
 		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Motoristas cadatrados</p>
+			<p className="text-xl md:text-2xl font-semibold mb-5">Motoristas cadastrados</p>
 			<ListarMotoristasFiltros setFiltros={setFiltros} />
 			{motoristas.length ? (
 				<>
 					<div className="max-h-90 h-fit overflow-auto max-w-[calc(100vw-1rem)] w-fit">
-						<table className="relative">
+						<table className="relative text-gray-700">
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">
 									<th colSpan={2} className="bg-gray-100" />
@@ -79,7 +79,7 @@ export default function ListarMotoristas() {
 										<td className="px-4 py-2 border-gray-300 border-1">
 											{new Date(motorista.cnh.validade).toLocaleDateString()}
 										</td>
-										<td className="px-4 py-2 text-gray-700 flex gap-4 border-gray-300 border-1">
+										<td className="px-4 py-2 flex gap-4 border-gray-300 border-1">
 											<PencilSquareIcon
 												className="size-6 cursor-pointer hover:text-blue-600"
 												onClick={() => navigate(`/motoristas/buscar/${motorista._id}`)}

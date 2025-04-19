@@ -1,5 +1,5 @@
 import type { ResultadoPaginado } from "@customTypes/globalTypes";
-import type { EditarMotoristaType, MotoristasType } from "@customTypes/motoristaTypes.js";
+import type { EditarMotoristaType, MotoristasType } from "@customTypes/motoristaTypes";
 import api from "api";
 
 async function listarMotoristas(query = "") {

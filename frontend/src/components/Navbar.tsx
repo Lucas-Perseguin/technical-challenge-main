@@ -15,7 +15,7 @@ export default function Navbar() {
 
 	const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
 
-	const isActive = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-gray-700");
+	const isActive = (path: string) => (location.pathname.split("/")[1] === path ? "text-blue-600 font-semibold" : "text-gray-700");
 
 	return (
 		<nav className="bg-white shadow p-4 flex gap-6 items-center justify-center relative w-full min-h-14">
@@ -28,25 +28,23 @@ export default function Navbar() {
 			</Link>
 			{token ? (
 				<>
-					<Link to="/motoristas" className={isActive("/motoristas")}>
+					<Link to="/motoristas" className={isActive("motoristas")}>
 						Motorista
 					</Link>
-					<Link to="/veiculos" className={isActive("/veiculos")}>
+					<Link to="/veiculos" className={isActive("veiculos")}>
 						Veículos
 					</Link>
-					<Link to="/viagens" className={isActive("/viagens")}>
+					<Link to="/viagens" className={isActive("viagens")}>
 						Viagens
 					</Link>
 				</>
 			) : (
-				<Link to="/" className={isActive("/")}>
-					Página Inicial
-				</Link>
+				<></>
 			)}
 			<div className="absolute h-fit w-fit right-4 top-auto">
 				{!token ? (
 					<Link to="/acessar">
-						<ArrowRightEndOnRectangleIcon className={`size-6 md:size-8 cursor-pointer ${isActive("/entrar")}`} />
+						<ArrowRightEndOnRectangleIcon className={`size-6 md:size-8 cursor-pointer ${isActive("entrar")}`} />
 					</Link>
 				) : isUserDropdownOpen ? (
 					<BarsArrowUpIcon
