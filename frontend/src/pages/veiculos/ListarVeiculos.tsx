@@ -41,11 +41,10 @@ export default function ListarVeiculos() {
 
 	return (
 		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Veiculos cadastrados</p>
 			<ListarVeiculosFiltros setFiltros={setFiltros} />
 			{veiculos.length ? (
 				<>
-					<div className="max-h-90 h-fit overflow-auto max-w-[calc(100vw-1rem)] w-fit">
+					<div className="max-h-160 h-fit overflow-auto max-w-[calc(100vw-1rem)] w-fit">
 						<table className="relative text-gray-700">
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">
@@ -63,7 +62,7 @@ export default function ListarVeiculos() {
 									<th className="border-1 border-gray-300">Tipo</th>
 									<th className="border-1 border-gray-300">Tipo</th>
 									<th className="border-1 border-gray-300 px-2">Quantidade</th>
-									<th>Ações</th>
+									<th className="border-1 border-gray-300">Ações</th>
 								</tr>
 							</thead>
 							<tbody className="text-center">

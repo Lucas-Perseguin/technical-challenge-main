@@ -3,7 +3,7 @@ import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 import { veiculoService } from "@services/veiculoService";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function BuscarVeiculo() {
@@ -46,7 +46,6 @@ export default function BuscarVeiculo() {
 
 	return (
 		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Visualizar e editar veículo</p>
 			<div className="max-w-[calc(100%-2rem)] w-60 relative">
 				<label htmlFor="nome" className="block text-sm/6 font-medium">
 					ID do veículo
@@ -64,6 +63,9 @@ export default function BuscarVeiculo() {
 					className={`${valor.length === 24 ? "text-blue-600 cursor-pointer" : "text-gray-700"} size-8 absolute top-6 right-0`}
 				/>
 			</div>
+			<Link className="underline text-blue-600 mt-2 cursor-pointer" to={`/veiculos/viagens/${valor}`}>
+				Visualizar viagens do veículo
+			</Link>
 			<form
 				onSubmit={handleSubmit(editarVeiculo)}
 				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10 mt-14"

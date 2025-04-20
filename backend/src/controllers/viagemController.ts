@@ -69,20 +69,27 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 }
 
 async function listarViagensDoMotorista(req: Request, res: Response, next: NextFunction) {
-	const { page = 1, limit = 10 } = req.query;
 	try {
 		const { id } = req.params;
-		const viagensDoMotorista = await Viagem.find({ motorista: id })
+		const { page = 1, limit = 10 } = req.query;
+
+		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
+		for (const [key, value] of Object.entries(req.query)) {
+			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		}
+
+		const viagensDoMotorista = await Viagem.find({ ...objetoQuery, motorista: id })
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 });
+			.sort({ createdAt: -1 })
+			.populate("veiculo");
 		if (viagensDoMotorista.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else {
 			const quantidade = await Viagem.countDocuments({ motorista: id });
 			res.json({
 				dados: viagensDoMotorista,
 				paginacao: {
-					paginasTotal: quantidade / Number(limit),
+					paginasTotal: Math.ceil(quantidade / Number(limit)),
 					itensTotal: quantidade,
 				},
 			});
@@ -93,20 +100,27 @@ async function listarViagensDoMotorista(req: Request, res: Response, next: NextF
 }
 
 async function listarViagensDoVeiculo(req: Request, res: Response, next: NextFunction) {
-	const { page = 1, limit = 10 } = req.query;
 	try {
 		const { id } = req.params;
-		const viagensDoVeiculo = await Viagem.find({ veiculo: id })
+		const { page = 1, limit = 10 } = req.query;
+
+		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
+		for (const [key, value] of Object.entries(req.query)) {
+			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		}
+
+		const viagensDoVeiculo = await Viagem.find({ ...objetoQuery, veiculo: id })
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 });
+			.sort({ createdAt: -1 })
+			.populate("motorista");
 		if (viagensDoVeiculo.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else {
 			const quantidade = await Viagem.countDocuments({ veiculo: id });
 			res.json({
 				dados: viagensDoVeiculo,
 				paginacao: {
-					paginasTotal: quantidade / Number(limit),
+					paginasTotal: Math.ceil(quantidade / Number(limit)),
 					itensTotal: quantidade,
 				},
 			});

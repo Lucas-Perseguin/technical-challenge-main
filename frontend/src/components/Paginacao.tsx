@@ -31,7 +31,7 @@ export default function Paginacao({ totalItems, itemsPerPage, currentPage, setCu
 	};
 
 	return (
-		<div className="flex justify-center items-center space-x-2 mt-4">
+		<div className="flex justify-center items-center space-x-2 mt-4 mb-6">
 			<button
 				className={`px-4 py-2 rounded ${currentPage === 1 ? "bg-gray-300 cursor-default" : "bg-blue-600 text-white cursor-pointer"}`}
 				onClick={handlePrevious}

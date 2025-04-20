@@ -24,11 +24,10 @@ export default function CadastrarViagem() {
 	}
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Cadastrar viagem</p>
+		<div className="w-full flex flex-col items-center h-[calc(100vh-96px)] bg-gray-100 justify-center">
 			<form
 				onSubmit={handleSubmit(cadastrarViagem)}
-				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10 mt-14"
+				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10"
 			>
 				<div>
 					<label htmlFor="Motorista" className="block text-sm/6 font-medium">
@@ -122,28 +121,30 @@ export default function CadastrarViagem() {
 					/>
 					<p className="text-red-700 text-sm text-nowrap">{errors.previsaoChegada?.message}</p>
 				</div>
-				<div>
-					<label htmlFor="status" className="block text-sm/6 font-medium">
-						Status
-					</label>
-					<select
-						id="status"
-						autoComplete="status"
-						className="block w-full h-9 rounded-md bg-white px-2 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-						{...register("status", {
-							required: "Insira a status",
-						})}
-					>
-						<option value="Planejada">Planejada</option>
-						<option value="Em andamento">Em andamento</option>
-						<option value="Concluída">Concluída</option>
-						<option value="Cancelada">Cancelada</option>
-					</select>
-					<p className="text-red-700 text-sm text-nowrap">{errors.status?.message}</p>
+				<div className="flex flex-col gap-4 w-full md:grid md:grid-cols-2 md:gap-10 md:col-span-2 md:items-end">
+					<div>
+						<label htmlFor="status" className="block text-sm/6 font-medium">
+							Status
+						</label>
+						<select
+							id="status"
+							autoComplete="status"
+							className="block w-full h-9 rounded-md bg-white px-2 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+							{...register("status", {
+								required: "Insira a status",
+							})}
+						>
+							<option value="Planejada">Planejada</option>
+							<option value="Em andamento">Em andamento</option>
+							<option value="Concluída">Concluída</option>
+							<option value="Cancelada">Cancelada</option>
+						</select>
+						<p className="text-red-700 text-sm text-nowrap">{errors.status?.message}</p>
+					</div>
+					<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer md:col-start-2 h-10">
+						Enviar
+					</button>
 				</div>
-				<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer md:col-start-2 h-10">
-					Enviar
-				</button>
 			</form>
 		</div>
 	);

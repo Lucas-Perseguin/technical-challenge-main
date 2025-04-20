@@ -4,11 +4,13 @@ const options: { [key: string]: { name: string; url: string; path: string | unde
 	motoristas: [
 		{ name: "Listar", url: "", path: undefined },
 		{ name: "Buscar", url: "/buscar", path: "buscar" },
+		{ name: "Viagens", url: "/viagens", path: "viagens" },
 		{ name: "Cadastrar", url: "/cadastrar", path: "cadastrar" },
 	],
 	veiculos: [
 		{ name: "Listar", url: "", path: undefined },
 		{ name: "Buscar", url: "/buscar", path: "buscar" },
+		{ name: "Viagens", url: "/viagens", path: "viagens" },
 		{ name: "Cadastrar", url: "/cadastrar", path: "cadastrar" },
 	],
 	viagens: [

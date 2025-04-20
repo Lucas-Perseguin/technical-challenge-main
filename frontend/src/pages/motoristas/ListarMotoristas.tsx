@@ -42,11 +42,10 @@ export default function ListarMotoristas() {
 
 	return (
 		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Motoristas cadastrados</p>
 			<ListarMotoristasFiltros setFiltros={setFiltros} />
 			{motoristas.length ? (
 				<>
-					<div className="max-h-90 h-fit overflow-auto max-w-[calc(100vw-1rem)] w-fit">
+					<div className="max-h-160 h-fit overflow-auto max-w-[calc(100vw-1rem)] w-fit">
 						<table className="relative text-gray-700">
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">

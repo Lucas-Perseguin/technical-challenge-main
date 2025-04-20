@@ -31,11 +31,10 @@ export default function CadastrarMotorista() {
 	}
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Cadastrar motorista</p>
+		<div className="w-full flex flex-col items-center h-[calc(100vh-96px)] bg-gray-100 justify-center">
 			<form
 				onSubmit={handleSubmit(cadastrarMotorista)}
-				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10 mt-14"
+				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10"
 			>
 				<div>
 					<label htmlFor="nome" className="block text-sm/6 font-medium">

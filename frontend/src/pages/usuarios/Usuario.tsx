@@ -30,7 +30,7 @@ export default function Usuario() {
 		setModal(<ModalDeletar funcao={userService.deletarUsuario} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
-	async function editarUsuario(data) {
+	async function editarUsuario(data: any) {
 		try {
 			await userService.editarUsusario({ nome: data.nome, email: data.email }, data._id);
 			toast.success("Seus dados foram atualizados com sucesso!");
@@ -58,11 +58,10 @@ export default function Usuario() {
 	}, []);
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 min-h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Visualizar e editar minha conta</p>
+		<div className="w-full flex flex-col items-center min-h-[calc(100vh-96px)] bg-gray-100 justify-center">
 			<form
 				onSubmit={handleSubmit(editarUsuario)}
-				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10 mt-14"
+				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10"
 			>
 				<div>
 					<label htmlFor="nome" className="block text-sm/6 font-medium">

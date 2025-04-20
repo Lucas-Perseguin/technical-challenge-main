@@ -3,13 +3,14 @@ import Paginacao from "@components/Paginacao";
 import ListarViagensFiltros from "@components/filtros/ListarViagensFiltros";
 import type { PaginacaoType } from "@customTypes/globalTypes";
 import type { ViagemType } from "@customTypes/viagemTypes";
-import { ArchiveBoxXMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxXMarkIcon, MagnifyingGlassCircleIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { viagemService } from "@services/viagemService";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export default function ListarViagens() {
+export default function ViagensDoMotorista() {
+	const { id } = useParams();
 	const navigate = useNavigate();
 
 	const [viagens, setviagens] = useState<ViagemType[]>([]);
@@ -17,30 +18,53 @@ export default function ListarViagens() {
 	const [paginacao, setPaginacao] = useState<PaginacaoType>({ itensTotal: 0, paginasTotal: 1, page: 1, limit: 10 });
 	const [filtros, setFiltros] = useState("");
 	const [auxDelecao, setAuxDelecao] = useState(0);
+	const [valor, setValor] = useState(id || "");
+
+	async function listarViagens(id: string) {
+		try {
+			const query = `page=${paginacao.page}&limit=${paginacao.limit}${filtros}`;
+			const { data: resposta } = await viagemService.buscarViagensDoMotorista(id, query);
+			setviagens(resposta.dados);
+			setPaginacao((prev) => {
+				return { ...prev, itensTotal: resposta.paginacao.itensTotal, paginasTotal: resposta.paginacao.paginasTotal };
+			});
+		} catch (erro: any) {
+			toast.error(erro.response.data.erro || erro.response.data);
+		}
+	}
 
 	function abrirModal(id: string) {
 		setModal(<ModalDeletar funcao={viagemService.deletarViagem} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
 	useEffect(() => {
-		async function listarViagens() {
-			try {
-				const query = `page=${paginacao.page}&limit=${paginacao.limit}${filtros}`;
-				const { data: resposta } = await viagemService.listarViagens(query);
-				setviagens(resposta.dados);
-				setPaginacao((prev) => {
-					return { ...prev, itensTotal: resposta.paginacao.itensTotal, paginasTotal: resposta.paginacao.paginasTotal };
-				});
-			} catch (erro: any) {
-				toast.error(erro.response.data.erro || erro.response.data);
-			}
+		if (valor) {
+			listarViagens(valor);
 		}
-
-		listarViagens();
 	}, [paginacao.page, paginacao.limit, filtros, auxDelecao]);
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
+		<div className="w-full flex flex-col items-center pt-6 min-h-[calc(100vh-96px)] bg-gray-100">
+			<div className="max-w-[calc(100%-2rem)] w-60 relative">
+				<label htmlFor="nome" className="block text-sm/6 font-medium">
+					ID do motorista
+				</label>
+				<input
+					id="nome"
+					type="text"
+					autoComplete="nome"
+					value={valor}
+					onChange={(e) => setValor(e.target.value)}
+					className="block w-full rounded-md bg-white px-2 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+				/>
+				<MagnifyingGlassCircleIcon
+					onClick={() => listarViagens(valor)}
+					className={`${valor.length === 24 ? "text-blue-600 cursor-pointer" : "text-gray-700"} size-8 absolute top-6 right-0`}
+				/>
+			</div>
+			<Link className="underline text-blue-600 cursor-pointer mb-6" to={`/motoristas/buscar/${valor}`}>
+				Visualizar dados do motorista
+			</Link>
 			<ListarViagensFiltros setFiltros={setFiltros} />
 			{viagens.length ? (
 				<>
@@ -48,7 +72,6 @@ export default function ListarViagens() {
 						<table className="relative text-gray-700">
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">
-									<th className="border-1 border-gray-300">Motorista</th>
 									<th className="border-1 border-gray-300">Veículo</th>
 									<th className="border-1 border-gray-300">Origem</th>
 									<th className="border-1 border-gray-300">Destino</th>
@@ -61,15 +84,6 @@ export default function ListarViagens() {
 							<tbody className="text-center">
 								{viagens?.map((viagem, indice) => (
 									<tr key={viagem._id}>
-										<td
-											className={`px-4 py-2 border-gray-300 border-1 ${viagem.motorista ? "cursor-pointer underline hover:text-blue-800" : "cursor-default"}`}
-										>
-											{viagem.motorista ? (
-												<Link to={`/motoristas/buscar/${viagem.motorista?._id}`}>{viagem.motorista?.nome}</Link>
-											) : (
-												<>Não encontrado</>
-											)}
-										</td>
 										<td
 											className={`px-4 py-2 border-gray-300 border-1 ${viagem.veiculo ? "cursor-pointer underline hover:text-blue-800" : "cursor-default"}`}
 										>

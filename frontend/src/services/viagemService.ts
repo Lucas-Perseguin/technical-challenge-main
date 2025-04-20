@@ -1,5 +1,5 @@
 import type { ResultadoPaginado } from "@customTypes/globalTypes";
-import type { BuscarViagemType, CriarViagemType, EditarViagemType, ViagemType } from "@customTypes/viagemTypes";
+import type { BuscarViagemType, EditarViagemType, ViagemType } from "@customTypes/viagemTypes";
 import api from "api";
 
 async function listarViagens(query = "") {
@@ -22,10 +22,20 @@ async function cadastrarViagem(data: EditarViagemType) {
 	return await api.post("/viagens", data);
 }
 
+async function buscarViagensDoMotorista(id: string, query = "") {
+	return await api.get<ResultadoPaginado<ViagemType>>(`/viagens/motorista/${id}?${query}`);
+}
+
+async function buscarViagensDoVeiculo(id: string, query = "") {
+	return await api.get<ResultadoPaginado<ViagemType>>(`/viagens/veiculo/${id}?${query}`);
+}
+
 export const viagemService = {
 	listarViagens,
 	deletarViagem,
 	buscarViagem,
 	editarViagem,
 	cadastrarViagem,
+	buscarViagensDoMotorista,
+	buscarViagensDoVeiculo,
 };

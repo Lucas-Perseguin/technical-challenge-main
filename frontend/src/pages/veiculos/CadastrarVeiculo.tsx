@@ -20,11 +20,10 @@ export default function CadastrarVeiculo() {
 	}
 
 	return (
-		<div className="w-full flex flex-col items-center pt-6 h-[calc(100vh-96px)] bg-gray-100">
-			<p className="text-xl md:text-2xl font-semibold mb-5">Cadastrar veículo</p>
+		<div className="w-full flex flex-col items-center justify-center h-[calc(100vh-96px)] bg-gray-100">
 			<form
 				onSubmit={handleSubmit(cadastrarVeiculo)}
-				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10 mt-14"
+				className="flex flex-col md:grid md:grid-cols-2 max-w-[calc(100%-2rem)] text-gray-700 gap-4 md:gap-10"
 			>
 				<div>
 					<label htmlFor="modelo" className="block text-sm/6 font-medium">
