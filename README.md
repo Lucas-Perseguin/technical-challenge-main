@@ -15,10 +15,18 @@
   docker-compose up
   ```
   
-- Executar docker compose do serviço de seed caso seja a primeira vez rodando o projeto
-  ```
-  docker-compose -f docker-compose-seed.yml up
-  ```
+- Caso seja a primeira vez rodando o projeto
+  - Criar arquivo .env na pasta seed com
+    ```
+    ADMIN_NOME=NomeDoPerfilAdmin
+    ADMIN_EMAIL=EmailDoPerfilAdmin
+    ADMIN_CPF=CpfDoPerfilAdmin
+    ADMIN_SENHA=SenhaDoPerfilAdmin
+    ```
+  - Rodar docker compose do serviço de seed
+    ```
+    docker-compose -f docker-compose-seed.yml up
+    ```
 
 - Acessar o site em http://localhost:4173
 - Ou acessar a API em http://localhost:4000
