@@ -21,28 +21,29 @@ function App() {
 	return (
 		<Router>
 			<AuthContextProvider>
-				<Navbar />
 				<Routes>
-					<Route index element={<Home />} />
-					<Route path="*" element={<Navigate to="/" />} />
 					<Route path="acessar" element={<Login />} />
 					<Route path="registrar" element={<Register />} />
-					<Route path="usuario" element={<Usuario />} />
-					<Route element={<Sidebar />}>
-						<Route path="motoristas">
-							<Route index element={<ListarMotoristas />} />
-							<Route path="buscar/:id?" element={<BuscarMotorista />} />
-							<Route path="cadastrar" element={<CadastrarMotorista />} />
-						</Route>
-						<Route path="veiculos">
-							<Route index element={<ListarVeiculos />} />
-							<Route path="buscar/:id?" element={<BuscarVeiculo />} />
-							<Route path="cadastrar" element={<CadastrarVeiculo />} />
-						</Route>
-						<Route path="viagens">
-							<Route index element={<ListarViagens />} />
-							<Route path="buscar/:id?" element={<BuscarViagem />} />
-							<Route path="cadastrar" element={<CadastrarViagem />} />
+					<Route element={<Navbar />}>
+						<Route path="*" element={<Navigate to="/" />} />
+						<Route index element={<Home />} />
+						<Route path="usuario" element={<Usuario />} />
+						<Route element={<Sidebar />}>
+							<Route path="motoristas">
+								<Route index element={<ListarMotoristas />} />
+								<Route path="buscar/:id?" element={<BuscarMotorista />} />
+								<Route path="cadastrar" element={<CadastrarMotorista />} />
+							</Route>
+							<Route path="veiculos">
+								<Route index element={<ListarVeiculos />} />
+								<Route path="buscar/:id?" element={<BuscarVeiculo />} />
+								<Route path="cadastrar" element={<CadastrarVeiculo />} />
+							</Route>
+							<Route path="viagens">
+								<Route index element={<ListarViagens />} />
+								<Route path="buscar/:id?" element={<BuscarViagem />} />
+								<Route path="cadastrar" element={<CadastrarViagem />} />
+							</Route>
 						</Route>
 					</Route>
 				</Routes>

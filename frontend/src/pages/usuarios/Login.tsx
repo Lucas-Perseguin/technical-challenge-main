@@ -42,13 +42,13 @@ export default function Login() {
 	};
 
 	return (
-		<>
-			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+		<div className="flex flex-col w-full h-dvh items-center justify-center px-6">
+			<div className="flex min-h-full flex-1 flex-col justify-center w-full">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 					<h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Acesse sua conta</h2>
 				</div>
 
-				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm w-full">
 					<form onSubmit={handleSubmit(submit)} className="space-y-2">
 						<div>
 							<label htmlFor="cpf" className="block text-sm/6 font-medium text-gray-900">
@@ -134,6 +134,6 @@ export default function Login() {
 					</p>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
