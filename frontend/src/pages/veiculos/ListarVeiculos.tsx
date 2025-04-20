@@ -18,16 +18,8 @@ export default function ListarVeiculos() {
 	const [filtros, setFiltros] = useState("");
 	const [auxDelecao, setAuxDelecao] = useState(0);
 
-	function abrirModal(id: string, indice: number) {
-		setModal(
-			<ModalDeletar
-				funcao={veiculoService.deletarVeiculo}
-				id={id}
-				indice={indice}
-				setModal={setModal}
-				setState={setAuxDelecao}
-			/>,
-		);
+	function abrirModal(id: string) {
+		setModal(<ModalDeletar funcao={veiculoService.deletarVeiculo} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
 	useEffect(() => {
@@ -89,7 +81,7 @@ export default function ListarVeiculos() {
 											/>
 											<ArchiveBoxXMarkIcon
 												className="size-6 cursor-pointer hover:text-red-600"
-												onClick={() => abrirModal(veiculo._id, indice)}
+												onClick={() => abrirModal(veiculo._id)}
 											/>
 										</td>
 									</tr>

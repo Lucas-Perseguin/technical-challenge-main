@@ -141,7 +141,7 @@ export default function CadastrarViagem() {
 					</select>
 					<p className="text-red-700 text-sm text-nowrap">{errors.status?.message}</p>
 				</div>
-				<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer md:col-start-2">
+				<button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white cursor-pointer md:col-start-2 h-10">
 					Enviar
 				</button>
 			</form>

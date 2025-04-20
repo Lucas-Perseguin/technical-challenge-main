@@ -119,6 +119,20 @@ async function logar(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function buscarUsuarioPorToken(req: Request, res: Response, next: NextFunction) {
+	try {
+		const usuario = await Usuario.findById(req.app.locals._id).select(["_id", "nome", "cpf", "email"]);
+		if (!usuario) {
+			res.status(404).json({ erro: "Usuário não encontrado" });
+			return;
+		}
+
+		res.json(usuario);
+	} catch (error: any) {
+		res.status(500).json({ erro: error.message });
+	}
+}
+
 const usuarioController = {
 	criar,
 	listar,
@@ -126,5 +140,6 @@ const usuarioController = {
 	atualizar,
 	deletar,
 	logar,
+	buscarUsuarioPorToken,
 };
 export default usuarioController;

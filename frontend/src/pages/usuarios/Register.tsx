@@ -45,7 +45,7 @@ export default function Register() {
 			toast.success("Cadastro realizado com sucesso!");
 			login(token, data.remember);
 		} catch (error: any) {
-			toast.error(error.erro as string);
+			toast.error(error.response.data.erro || error.response.data);
 		}
 	};
 

@@ -18,10 +18,8 @@ export default function ListarViagens() {
 	const [filtros, setFiltros] = useState("");
 	const [auxDelecao, setAuxDelecao] = useState(0);
 
-	function abrirModal(id: string, indice: number) {
-		setModal(
-			<ModalDeletar funcao={viagemService.deletarViagem} id={id} indice={indice} setModal={setModal} setState={setAuxDelecao} />,
-		);
+	function abrirModal(id: string) {
+		setModal(<ModalDeletar funcao={viagemService.deletarViagem} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
 	useEffect(() => {
@@ -96,7 +94,7 @@ export default function ListarViagens() {
 											/>
 											<ArchiveBoxXMarkIcon
 												className="size-6 cursor-pointer hover:text-red-600"
-												onClick={() => abrirModal(viagem._id, indice)}
+												onClick={() => abrirModal(viagem._id)}
 											/>
 										</td>
 									</tr>

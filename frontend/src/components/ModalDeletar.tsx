@@ -2,14 +2,13 @@ import type { JSX } from "react";
 import { toast } from "react-toastify";
 
 interface ModalDeletarType {
-	indice: number;
 	id: string;
 	setState: React.Dispatch<React.SetStateAction<number>>;
 	funcao: (id: string) => Promise<any>;
 	setModal: React.Dispatch<React.SetStateAction<JSX.Element>>;
 }
 
-export default function ModalDeletar({ indice, id, setState, funcao, setModal }: ModalDeletarType) {
+export default function ModalDeletar({ id, setState, funcao, setModal }: ModalDeletarType) {
 	async function deletar() {
 		try {
 			await funcao(id);

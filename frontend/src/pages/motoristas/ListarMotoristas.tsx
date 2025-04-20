@@ -19,16 +19,8 @@ export default function ListarMotoristas() {
 	const [filtros, setFiltros] = useState("");
 	const [auxDelecao, setAuxDelecao] = useState(0);
 
-	function abrirModal(id: string, indice: number) {
-		setModal(
-			<ModalDeletar
-				funcao={motoristaService.deletarMotorista}
-				id={id}
-				indice={indice}
-				setModal={setModal}
-				setState={setAuxDelecao}
-			/>,
-		);
+	function abrirModal(id: string) {
+		setModal(<ModalDeletar funcao={motoristaService.deletarMotorista} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
 	useEffect(() => {
@@ -86,7 +78,7 @@ export default function ListarMotoristas() {
 											/>
 											<ArchiveBoxXMarkIcon
 												className="size-6 cursor-pointer hover:text-red-600"
-												onClick={() => abrirModal(motorista._id, indice)}
+												onClick={() => abrirModal(motorista._id)}
 											/>
 										</td>
 									</tr>

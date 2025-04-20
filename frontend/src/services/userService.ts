@@ -14,7 +14,22 @@ async function register(data: UserRegister) {
 	return (await api.post("/usuarios", { ...data, admin: false })).data;
 }
 
+async function buscarPorToken() {
+	return await api.get("/usuarios/token");
+}
+
+async function editarUsusario(data, id: string) {
+	return await api.put(`/usuarios/${id}`, data);
+}
+
+async function deletarUsuario(id: string) {
+	return await api.delete(`/usuarios/${id}`);
+}
+
 export const userService = {
 	login,
 	register,
+	buscarPorToken,
+	editarUsusario,
+	deletarUsuario,
 };
