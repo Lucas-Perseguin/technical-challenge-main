@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import type { PipelineStage } from "mongoose";
 import rabbit, { queue } from "../config/rabbit.js";
 import Viagem from "../models/Viagem.js";
 
@@ -14,23 +15,65 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 
 async function listar(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { page = 1, limit = 10 } = req.query;
-		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
-		for (const [key, value] of Object.entries(req.query)) {
-			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		const { page = 1, limit = 10, motorista, placa } = req.query;
+
+		const pipeline: PipelineStage[] = [
+			{
+				$lookup: {
+					from: "motoristas",
+					localField: "motorista",
+					foreignField: "_id",
+					as: "motoristaInfo",
+				},
+			},
+			{
+				$lookup: {
+					from: "veiculos",
+					localField: "veiculo",
+					foreignField: "_id",
+					as: "veiculoInfo",
+				},
+			},
+			{
+				$unwind: "$motoristaInfo",
+			},
+			{
+				$unwind: "$veiculoInfo",
+			},
+		];
+
+		const matchConditions: { [key: string]: { $regex: RegExp } } = {};
+
+		if (motorista) {
+			matchConditions["motoristaInfo.nome"] = { $regex: new RegExp(motorista as string, "i") };
 		}
-		const viagens = await Viagem.find(objetoQuery)
-			.limit(Number(limit))
-			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 })
-			.populate("veiculo")
-			.populate("motorista");
-		const quantidade = await Viagem.countDocuments();
+
+		if (placa) {
+			matchConditions["veiculoInfo.placa"] = { $regex: new RegExp(placa as string, "i") };
+		}
+
+		for (const [key, value] of Object.entries(req.query)) {
+			if (!["page", "limit", "motorista", "placa"].includes(key) && value) {
+				matchConditions[key] = { $regex: new RegExp(value as string, "i") };
+			}
+		}
+
+		if (Object.keys(matchConditions).length > 0) {
+			pipeline.push({ $match: matchConditions });
+		}
+
+		const countResult = await Viagem.aggregate([...pipeline, { $count: "total" }]);
+		const total = countResult[0]?.total || 0;
+
+		pipeline.push({ $sort: { createdAt: -1 } }, { $skip: (Number(page) - 1) * Number(limit) }, { $limit: Number(limit) });
+
+		const viagens = await Viagem.aggregate(pipeline);
+
 		res.json({
 			dados: viagens,
 			paginacao: {
-				paginasTotal: Math.ceil(quantidade / Number(limit)),
-				itensTotal: quantidade,
+				paginasTotal: Math.ceil(total / Number(limit)),
+				itensTotal: total,
 			},
 		});
 	} catch (error: any) {
@@ -85,7 +128,7 @@ async function listarViagensDoMotorista(req: Request, res: Response, next: NextF
 			.populate("veiculo");
 		if (viagensDoMotorista.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else {
-			const quantidade = await Viagem.countDocuments({ motorista: id });
+			const quantidade = await Viagem.countDocuments({ ...objetoQuery, motorista: id });
 			res.json({
 				dados: viagensDoMotorista,
 				paginacao: {
@@ -116,7 +159,7 @@ async function listarViagensDoVeiculo(req: Request, res: Response, next: NextFun
 			.populate("motorista");
 		if (viagensDoVeiculo.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
 		else {
-			const quantidade = await Viagem.countDocuments({ veiculo: id });
+			const quantidade = await Viagem.countDocuments({ ...objetoQuery, veiculo: id });
 			res.json({
 				dados: viagensDoVeiculo,
 				paginacao: {

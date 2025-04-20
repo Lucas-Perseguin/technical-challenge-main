@@ -20,4 +20,6 @@ export type AtualizarViagemType = CriarViagemType;
 export type ListarViagensType = Omit<CriarViagemType, "veiculo" | "motorista" | "dataPartida" | "previsaoChegada"> & {
 	page: number;
 	limit: number;
+	motorista: string;
+	placa: string;
 };

@@ -24,6 +24,8 @@ const atualizarViagemSchema = Joi.object<AtualizarViagemType>({
 const listarViagensSchema = Joi.object<ListarViagensType>({
 	origem: Joi.string().min(3).max(60),
 	destino: Joi.string().min(3).max(60),
+	motorista: Joi.string().min(3).max(60),
+	placa: Joi.string().min(2),
 	status: Joi.string().valid("Planejada", "Em andamento", "Concluída", "Cancelada"),
 	page: Joi.number(),
 	limit: Joi.number(),
