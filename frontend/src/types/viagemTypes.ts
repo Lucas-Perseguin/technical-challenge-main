@@ -18,11 +18,13 @@ export type ViagemType = {
 
 export type CriarViagemType = Omit<ViagemType, "_id" | "createdAt" | "updatedAt">;
 
-export type EditarViagemType = Omit<CriarViagemType, "motorista" | "veiculo"> & { motorista: string; veiculo: string };
+export type EditarViagemType = Omit<CriarViagemType, "motoristaInfo" | "veiculoInfo">;
 
-export type BuscarViagemType = Omit<CriarViagemType, "dataPartida" | "previsaoChegada"> & {
+export type BuscarViagemType = Omit<CriarViagemType, "dataPartida" | "previsaoChegada" | "motorista" | "veiculo"> & {
 	dataPartida: string;
 	previsaoChegada: string;
+	motorista: MotoristasType;
+	veiculo: VeiculoType;
 };
 
 export type VisualizarViagemType = Omit<EditarViagemType, "dataPartida" | "previsaoChegada"> & {
