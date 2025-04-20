@@ -34,7 +34,7 @@ async function listar(req: Request, res: Response, next: NextFunction) {
 			.limit(Number(limit))
 			.skip((Number(page) - 1) * Number(limit))
 			.sort({ createdAt: -1 });
-		const quantidade = await Usuario.countDocuments();
+		const quantidade = await Usuario.countDocuments(objetoQuery);
 		res.json({
 			dados: usuarios,
 			paginacao: {
