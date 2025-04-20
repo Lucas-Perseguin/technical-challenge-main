@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { PipelineStage } from "mongoose";
+import mongoose from "mongoose";
 import rabbit, { queue } from "../config/rabbit.js";
 import Viagem from "../models/Viagem.js";
 
@@ -114,26 +115,58 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 async function listarViagensDoMotorista(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { id } = req.params;
-		const { page = 1, limit = 10 } = req.query;
+		const { page = 1, limit = 10, placa } = req.query;
 
-		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
-		for (const [key, value] of Object.entries(req.query)) {
-			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		const pipeline: PipelineStage[] = [
+			{
+				$match: {
+					motorista: new mongoose.Types.ObjectId(id),
+				},
+			},
+			{
+				$lookup: {
+					from: "veiculos",
+					localField: "veiculo",
+					foreignField: "_id",
+					as: "veiculoInfo",
+				},
+			},
+			{
+				$unwind: "$veiculoInfo",
+			},
+		];
+
+		const matchConditions: { [key: string]: { $regex: RegExp } } = {};
+
+		if (placa) {
+			matchConditions["veiculoInfo.placa"] = { $regex: new RegExp(placa as string, "i") };
 		}
 
-		const viagensDoMotorista = await Viagem.find({ ...objetoQuery, motorista: id })
-			.limit(Number(limit))
-			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 })
-			.populate("veiculo");
-		if (viagensDoMotorista.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
-		else {
-			const quantidade = await Viagem.countDocuments({ ...objetoQuery, motorista: id });
+		for (const [key, value] of Object.entries(req.query)) {
+			if (!["page", "limit", "placa"].includes(key) && value) {
+				matchConditions[key] = { $regex: new RegExp(value as string, "i") };
+			}
+		}
+
+		if (Object.keys(matchConditions).length > 0) {
+			pipeline.push({ $match: matchConditions });
+		}
+
+		const countResult = await Viagem.aggregate([...pipeline, { $count: "total" }]);
+		const total = countResult[0]?.total || 0;
+
+		pipeline.push({ $sort: { createdAt: -1 } }, { $skip: (Number(page) - 1) * Number(limit) }, { $limit: Number(limit) });
+
+		const viagensDoMotorista = await Viagem.aggregate(pipeline);
+
+		if (viagensDoMotorista.length === 0) {
+			res.status(404).json({ erro: "Nenhuma viagem encontrada" });
+		} else {
 			res.json({
 				dados: viagensDoMotorista,
 				paginacao: {
-					paginasTotal: Math.ceil(quantidade / Number(limit)),
-					itensTotal: quantidade,
+					paginasTotal: Math.ceil(total / Number(limit)),
+					itensTotal: total,
 				},
 			});
 		}
@@ -145,26 +178,58 @@ async function listarViagensDoMotorista(req: Request, res: Response, next: NextF
 async function listarViagensDoVeiculo(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { id } = req.params;
-		const { page = 1, limit = 10 } = req.query;
+		const { page = 1, limit = 10, motorista } = req.query;
 
-		const objetoQuery: { [key: string]: { $regex: RegExp } } = {};
-		for (const [key, value] of Object.entries(req.query)) {
-			if (key !== "page" && key !== "limit" && value) objetoQuery[key] = { $regex: new RegExp(value as string, "i") };
+		const pipeline: PipelineStage[] = [
+			{
+				$match: {
+					veiculo: new mongoose.Types.ObjectId(id),
+				},
+			},
+			{
+				$lookup: {
+					from: "motoristas",
+					localField: "motorista",
+					foreignField: "_id",
+					as: "motoristaInfo",
+				},
+			},
+			{
+				$unwind: "$motoristaInfo",
+			},
+		];
+
+		const matchConditions: { [key: string]: { $regex: RegExp } } = {};
+
+		if (motorista) {
+			matchConditions["motoristaInfo.nome"] = { $regex: new RegExp(motorista as string, "i") };
 		}
 
-		const viagensDoVeiculo = await Viagem.find({ ...objetoQuery, veiculo: id })
-			.limit(Number(limit))
-			.skip((Number(page) - 1) * Number(limit))
-			.sort({ createdAt: -1 })
-			.populate("motorista");
-		if (viagensDoVeiculo.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
-		else {
-			const quantidade = await Viagem.countDocuments({ ...objetoQuery, veiculo: id });
+		for (const [key, value] of Object.entries(req.query)) {
+			if (!["page", "limit", "motorista"].includes(key) && value) {
+				matchConditions[key] = { $regex: new RegExp(value as string, "i") };
+			}
+		}
+
+		if (Object.keys(matchConditions).length > 0) {
+			pipeline.push({ $match: matchConditions });
+		}
+
+		const countResult = await Viagem.aggregate([...pipeline, { $count: "total" }]);
+		const total = countResult[0]?.total || 0;
+
+		pipeline.push({ $sort: { createdAt: -1 } }, { $skip: (Number(page) - 1) * Number(limit) }, { $limit: Number(limit) });
+
+		const viagensDoVeiculo = await Viagem.aggregate(pipeline);
+
+		if (viagensDoVeiculo.length === 0) {
+			res.status(404).json({ erro: "Nenhuma viagem encontrada" });
+		} else {
 			res.json({
 				dados: viagensDoVeiculo,
 				paginacao: {
-					paginasTotal: Math.ceil(quantidade / Number(limit)),
-					itensTotal: quantidade,
+					paginasTotal: Math.ceil(total / Number(limit)),
+					itensTotal: total,
 				},
 			});
 		}

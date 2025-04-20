@@ -49,7 +49,7 @@ export default function ListarViagens() {
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">
 									<th className="border-1 border-gray-300">Motorista</th>
-									<th className="border-1 border-gray-300">Veículo</th>
+									<th className="border-1 border-gray-300">Placa</th>
 									<th className="border-1 border-gray-300">Origem</th>
 									<th className="border-1 border-gray-300">Destino</th>
 									<th className="border-1 border-gray-300">Partida</th>
@@ -59,13 +59,13 @@ export default function ListarViagens() {
 								</tr>
 							</thead>
 							<tbody className="text-center">
-								{viagens?.map((viagem, indice) => (
+								{viagens?.map((viagem) => (
 									<tr key={viagem._id}>
 										<td
 											className={`px-4 py-2 border-gray-300 border-1 ${viagem.motorista ? "cursor-pointer underline hover:text-blue-800" : "cursor-default"}`}
 										>
 											{viagem.motorista ? (
-												<Link to={`/motoristas/buscar/${viagem.motorista?._id}`}>{viagem.motorista?.nome}</Link>
+												<Link to={`/motoristas/buscar/${viagem.motorista}`}>{viagem.motoristaInfo?.nome}</Link>
 											) : (
 												<>Não encontrado</>
 											)}
@@ -74,7 +74,7 @@ export default function ListarViagens() {
 											className={`px-4 py-2 border-gray-300 border-1 ${viagem.veiculo ? "cursor-pointer underline hover:text-blue-800" : "cursor-default"}`}
 										>
 											{viagem.veiculo ? (
-												<Link to={`/veiculos/buscar/${viagem.veiculo?._id}`}>{viagem.veiculo?.modelo}</Link>
+												<Link to={`/veiculos/buscar/${viagem.veiculo}`}>{viagem.veiculoInfo?.placa}</Link>
 											) : (
 												<>Não encontrado</>
 											)}

@@ -1,11 +1,13 @@
 import type { ListarViagensFiltrosType } from "@customTypes/viagemTypes";
 import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
 interface ListarViagensFiltrosProps {
 	setFiltros: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ListarViagensFiltros({ setFiltros }: ListarViagensFiltrosProps) {
+	const location = useLocation();
 	const {
 		register,
 		handleSubmit,
@@ -25,8 +27,48 @@ export default function ListarViagensFiltros({ setFiltros }: ListarViagensFiltro
 	return (
 		<form
 			onSubmit={handleSubmit((data) => setFiltros(criarQueryString(data)))}
-			className="flex flex-col md:flex-row mb-5 text-gray-700 items-center md:items-end justify-center gap-3 md:gap-12"
+			className="flex flex-col md:flex-row mb-5 text-gray-700 items-center md:items-end justify-center gap-3 md:gap-6 flex-wrap"
 		>
+			{["veiculos", "viagens"].includes(location.pathname.split("/")[1]) ? (
+				<div className="relative">
+					<label htmlFor="motorista" className="block text-sm/6 font-medium">
+						Motorista
+					</label>
+					<input
+						id="motorista"
+						type="text"
+						autoComplete="motorista"
+						className="block w-full rounded-md bg-white px-2 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+						{...register("motorista", {
+							minLength: { value: 3, message: "Insira pelo menos 3 caracteres" },
+							maxLength: { value: 60, message: "Insira no máximo 60 caracteres" },
+						})}
+					/>
+					<p className="text-red-700 text-sm absolute -bottom-5 left-0 text-nowrap">{errors.motorista?.message}</p>
+				</div>
+			) : (
+				<></>
+			)}
+			{["motoristas", "viagens"].includes(location.pathname.split("/")[1]) ? (
+				<div className="relative">
+					<label htmlFor="placa" className="block text-sm/6 font-medium">
+						Placa
+					</label>
+					<input
+						id="placa"
+						type="text"
+						autoComplete="placa"
+						className="block w-full rounded-md bg-white px-2 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+						{...register("placa", {
+							minLength: { value: 3, message: "Insira pelo menos 3 caracteres" },
+							maxLength: { value: 60, message: "Insira no máximo 60 caracteres" },
+						})}
+					/>
+					<p className="text-red-700 text-sm absolute -bottom-5 left-0 text-nowrap">{errors.placa?.message}</p>
+				</div>
+			) : (
+				<></>
+			)}
 			<div className="relative">
 				<label htmlFor="origem" className="block text-sm/6 font-medium">
 					Origem

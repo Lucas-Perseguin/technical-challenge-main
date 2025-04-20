@@ -88,7 +88,7 @@ export default function ViagensDoVeiculo() {
 											className={`px-4 py-2 border-gray-300 border-1 ${viagem.motorista ? "cursor-pointer underline hover:text-blue-800" : "cursor-default"}`}
 										>
 											{viagem.veiculo ? (
-												<Link to={`/veiculos/buscar/${viagem.motorista?._id}`}>{viagem.motorista?.nome}</Link>
+												<Link to={`/veiculos/buscar/${viagem.motorista}`}>{viagem.motoristaInfo?.nome}</Link>
 											) : (
 												<>Não encontrado</>
 											)}

@@ -7,11 +7,13 @@ export type ViagemType = {
 	destino: string;
 	dataPartida: Date;
 	previsaoChegada: Date;
-	motorista?: MotoristasType;
-	veiculo?: VeiculoType;
+	motorista?: string;
+	veiculo?: string;
 	status: "Planejada" | "Em andamento" | "Concluída" | "Cancelada";
 	createdAt: Date;
 	updatedAt: Date;
+	motoristaInfo: MotoristasType;
+	veiculoInfo: VeiculoType;
 };
 
 export type CriarViagemType = Omit<ViagemType, "_id" | "createdAt" | "updatedAt">;
@@ -31,4 +33,6 @@ export type VisualizarViagemType = Omit<EditarViagemType, "dataPartida" | "previ
 export type ListarViagensFiltrosType = Omit<CriarViagemType, "veiculo" | "motorista" | "dataPartida" | "previsaoChegada"> & {
 	page: number;
 	limit: number;
+	motorista?: string;
+	placa?: string;
 };
