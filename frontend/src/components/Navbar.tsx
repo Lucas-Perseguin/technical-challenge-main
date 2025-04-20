@@ -92,7 +92,7 @@ export default function Navbar() {
 					</div>
 				</div>
 			</nav>
-			{token ? <Outlet /> : <></>}
+			{token || location.pathname === "/" ? <Outlet /> : <></>}
 		</>
 	);
 }
