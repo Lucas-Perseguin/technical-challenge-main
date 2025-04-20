@@ -1,12 +1,10 @@
 import api from "api";
-import { jwtVerify } from "jose";
 import { type ReactNode, createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
 	token: string | null;
 	setToken: React.Dispatch<React.SetStateAction<string | null>>;
-	userId: string | null;
 	login: (token: string, remember: boolean) => void;
 	logout: () => void;
 }
@@ -21,7 +19,6 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
 	const navigate = useNavigate();
 
 	const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
-	const [userId, setUserId] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (token) {
@@ -34,16 +31,7 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
 					return Promise.reject(error);
 				},
 			);
-			const secret = new TextEncoder().encode(import.meta.env.VITE_JWT_SECRET);
-			jwtVerify(token, secret).then((resultado) => {
-				if (!resultado.payload._id) {
-					return setUserId(null);
-				}
-
-				return setUserId(resultado.payload._id as string);
-			});
 		}
-		return setUserId(null);
 	}, [token]);
 
 	function login(token: string, remember: boolean) {
@@ -68,7 +56,6 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
 			value={{
 				token,
 				setToken,
-				userId,
 				logout,
 				login,
 			}}
