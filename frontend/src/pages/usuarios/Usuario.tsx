@@ -17,7 +17,7 @@ export default function Usuario() {
 		control,
 		getValues,
 		formState: { errors },
-	} = useForm();
+	} = useForm<{ nome: string; email: string; cpf: string; _id: string }>();
 	const maskOptions = {
 		mask: "___.___.___-__",
 		replacement: { _: /\d/ },
@@ -30,7 +30,7 @@ export default function Usuario() {
 		setModal(<ModalDeletar funcao={userService.deletarUsuario} id={id} setModal={setModal} setState={setAuxDelecao} />);
 	}
 
-	async function editarUsuario(data: any) {
+	async function editarUsuario(data: { nome: string; email: string; cpf: string; _id: string }) {
 		try {
 			await userService.editarUsusario({ nome: data.nome, email: data.email }, data._id);
 			toast.success("Seus dados foram atualizados com sucesso!");

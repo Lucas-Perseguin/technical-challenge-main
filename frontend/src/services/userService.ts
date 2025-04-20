@@ -18,7 +18,7 @@ async function buscarPorToken() {
 	return await api.get("/usuarios/token");
 }
 
-async function editarUsusario(data, id: string) {
+async function editarUsusario(data: { nome: string; email: string }, id: string) {
 	return await api.put(`/usuarios/${id}`, data);
 }
 
