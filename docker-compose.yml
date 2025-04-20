@@ -86,7 +86,7 @@ networks:
   backend:
     name: backend_network
     driver: bridge
-  fonrtend:
+  frontend:
     name: frontend_network
     driver: bridge
 
