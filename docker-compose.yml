@@ -71,12 +71,13 @@ services:
       - frontend
 
   react:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:4000/api
     container_name: react
     env_file:
       - .env
-    environment:
-      - VITE_API_URL=http://server:4000/api
     ports:
       - 4173:4173
     networks:
