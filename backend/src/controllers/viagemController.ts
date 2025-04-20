@@ -69,11 +69,48 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 }
 
 async function listarViagensDoMotorista(req: Request, res: Response, next: NextFunction) {
+	const { page = 1, limit = 10 } = req.query;
 	try {
 		const { id } = req.params;
-		const viagensDoMotorista = await Viagem.find({ motorista: id });
+		const viagensDoMotorista = await Viagem.find({ motorista: id })
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
+			.sort({ createdAt: -1 });
 		if (viagensDoMotorista.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
-		else res.json(viagensDoMotorista);
+		else {
+			const quantidade = await Viagem.countDocuments({ motorista: id });
+			res.json({
+				dados: viagensDoMotorista,
+				paginacao: {
+					paginasTotal: quantidade / Number(limit),
+					itensTotal: quantidade,
+				},
+			});
+		}
+	} catch (error: any) {
+		res.status(500).json({ erro: error.message });
+	}
+}
+
+async function listarViagensDoVeiculo(req: Request, res: Response, next: NextFunction) {
+	const { page = 1, limit = 10 } = req.query;
+	try {
+		const { id } = req.params;
+		const viagensDoVeiculo = await Viagem.find({ veiculo: id })
+			.limit(Number(limit))
+			.skip((Number(page) - 1) * Number(limit))
+			.sort({ createdAt: -1 });
+		if (viagensDoVeiculo.length === 0) res.status(404).json({ erro: "Nenhuma viagem encontrada" });
+		else {
+			const quantidade = await Viagem.countDocuments({ veiculo: id });
+			res.json({
+				dados: viagensDoVeiculo,
+				paginacao: {
+					paginasTotal: quantidade / Number(limit),
+					itensTotal: quantidade,
+				},
+			});
+		}
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
@@ -86,6 +123,7 @@ const viagemController = {
 	atualizar,
 	deletar,
 	listarViagensDoMotorista,
+	listarViagensDoVeiculo,
 };
 
 export default viagemController;

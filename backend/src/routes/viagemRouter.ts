@@ -12,6 +12,7 @@ viagemRouter.get("/", validarSchema(viagensSchemas.listarViagensSchema, "query")
 viagemRouter.get("/:id", viagemController.buscarPorId);
 viagemRouter.delete("/:id", viagemController.deletar);
 viagemRouter.get("/motorista/:id", viagemController.listarViagensDoMotorista);
+viagemRouter.get("/veiculo/:id", viagemController.listarViagensDoVeiculo);
 viagemRouter.post("/", validarSchema(viagensSchemas.criarViagemSchema, "body"), validacoesGeraisViagem, viagemController.criar);
 viagemRouter.put(
 	"/:id",
