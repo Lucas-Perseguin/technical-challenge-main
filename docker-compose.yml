@@ -51,7 +51,7 @@ services:
     build: ./backend
     container_name: server
     env_file:
-      - ./backend/.env.production
+      - .env
     environment:
       - MONGO_URI=mongodb://mongo:27017/logistica
       - REDIS_HOST=redis://redis:6379
@@ -68,10 +68,26 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - frontend
+
+  react:
+    build: ./frontend
+    container_name: react
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=http://server:4000/api
+    ports:
+      - 4173:4173
+    networks:
+      - frontend
 
 networks:
   backend:
     name: backend_network
+    driver: bridge
+  fonrtend:
+    name: frontend_network
     driver: bridge
 
 volumes:
