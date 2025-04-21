@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodata-test:/data/db
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata-test:/data
+
+  rabbit:
+    image: rabbitmq
+    container_name: rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-lib-test:/var/lib/rabbitmq
+      - rabbitmq-log-test:/var/log/rabbitmq
+
+volumes:
+  mongodata-test:
+  redisdata-test:
+  rabbitmq-lib-test:
+  rabbitmq-log-test:

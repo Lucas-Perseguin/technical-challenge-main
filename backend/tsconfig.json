@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
-    "module": "ESNext", // Use ESNext module system (ES modules)
-    "target": "ESNext", // Compile to the latest ECMAScript version
-    "moduleResolution": "node10", // Resolve modules using Node.js style
-    "esModuleInterop": true, // Enables interop between ES modules and CommonJS
-    "allowSyntheticDefaultImports": true, // Allows default imports from modules with no default export
-    "strict": true, // Enables strict type-checking
-    "skipLibCheck": true, // Skip type-checking declaration files (faster builds)
-    "outDir": "./dist" // Specifies output directory for compiled files
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "types": [
+      "node",
+      "jest"
+    ]
   },
   "include": [
-    "src/**/*"
-  ] // Include all files under the src directory
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

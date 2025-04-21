@@ -12,7 +12,7 @@ async function criar(req: Request, res: Response, next: NextFunction) {
 			senha: senhaHash,
 			cpf,
 		});
-		res.status(201).json({ ...novoUsuario, senha: undefined });
+		res.status(201).json({ ...novoUsuario.toObject(), senha: undefined });
 	} catch (error: any) {
 		res.status(400).json({ erro: error.message });
 	}
