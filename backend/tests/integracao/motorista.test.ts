@@ -13,9 +13,9 @@ describe("Testes de integração - Motoristas", () => {
 
 	const gerarMotorista = (): CriarMotoristaType => ({
 		nome: faker.person.fullName(),
-		cpf: "219.120.438-40", // Valid CPF for testing
+		cpf: "219.120.438-40",
 		cnh: {
-			numero: "80757003275", // Valid CNH for testing
+			numero: "80757003275",
 			validade: moment().add(1, "year").toDate(),
 		},
 	});

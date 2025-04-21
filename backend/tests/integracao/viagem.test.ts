@@ -41,7 +41,6 @@ describe("Testes de integração - Viagens", () => {
 
 		token = loginResponse.body.token;
 
-		// Create test motorista
 		await Motorista.deleteMany({});
 		const motorista = {
 			nome: faker.person.fullName(),
@@ -54,7 +53,6 @@ describe("Testes de integração - Viagens", () => {
 		const motoristaResponse = await server.post("/api/motoristas").set("Authorization", `Bearer ${token}`).send(motorista);
 		motoristaId = motoristaResponse.body._id;
 
-		// Create test veiculo
 		await Veiculo.deleteMany({});
 		const veiculo = {
 			modelo: faker.vehicle.model(),
@@ -80,7 +78,6 @@ describe("Testes de integração - Viagens", () => {
 		});
 
 		it("deve retornar erro ao criar viagem com CNH vencida antes da previsão de chegada", async () => {
-			// Update motorista CNH to expired date
 			await Motorista.findByIdAndUpdate(motoristaId, {
 				"cnh.validade": moment().hours(9).toDate(),
 			});
@@ -111,7 +108,6 @@ describe("Testes de integração - Viagens", () => {
 		it("deve retornar erro ao criar viagem com campos faltando", async () => {
 			const viagem = {
 				origem: faker.location.city(),
-				// missing required fields
 			};
 
 			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
@@ -227,7 +223,6 @@ describe("Testes de integração - Viagens", () => {
 		});
 
 		it("deve retornar paginação correta", async () => {
-			// Create multiple trips
 			const viagens = Array(15)
 				.fill(null)
 				.map(() => gerarViagem());

@@ -10,7 +10,7 @@ describe("Testes de integração - Usuários", () => {
 	const gerarUsuario = (): CriarUsuarioType => ({
 		nome: faker.person.fullName(),
 		email: faker.internet.email(),
-		cpf: "529.982.247-25", // Valid CPF for testing
+		cpf: "529.982.247-25",
 		senha: faker.internet.password(),
 		admin: false,
 	});
@@ -128,7 +128,6 @@ describe("Testes de integração - Usuários", () => {
 		let usuarioComumToken: string;
 
 		beforeAll(async () => {
-			// Create admin user
 			const admin = gerarUsuario();
 			admin.admin = true;
 
@@ -141,7 +140,6 @@ describe("Testes de integração - Usuários", () => {
 			});
 			token = loginResponse.body.token;
 
-			// Create regular user
 			const usuarioComum = { ...gerarUsuario(), cpf: "345.560.530-30" };
 			const createComumResponse = await server.post("/api/usuarios").send(usuarioComum);
 			const loginComumResponse = await server.post("/api/usuarios/login").send({
@@ -237,7 +235,6 @@ describe("Testes de integração - Usuários", () => {
 			});
 
 			it("deve retornar erro ao tentar atualizar admin sendo outro admin", async () => {
-				// Create another admin
 				const outroAdmin = { ...gerarUsuario(), cpf: "777.281.810-68", admin: true };
 				const createResponse = await server.post("/api/usuarios").send(outroAdmin);
 

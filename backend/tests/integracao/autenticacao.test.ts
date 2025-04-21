@@ -63,7 +63,6 @@ describe("Testes de integração - Autenticação", () => {
 		});
 
 		it("deve rejeitar token sem payload _id", async () => {
-			// Create token without _id in payload
 			const invalidToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZX0.hK2NrBqMxmO9QS7JLV2Cnh9UXQ6qVgWl7Hs2p0LDNso";
 
 			const response = await server.get("/api/usuarios").set("Authorization", `Bearer ${invalidToken}`);
@@ -83,7 +82,6 @@ describe("Testes de integração - Autenticação", () => {
 		});
 
 		it("deve verificar permissões de admin", async () => {
-			// Create non-admin user
 			const regularUser = { ...gerarUsuario(), admin: false, cpf: "345.560.530-30" };
 
 			await server.post("/api/usuarios").send(regularUser);
