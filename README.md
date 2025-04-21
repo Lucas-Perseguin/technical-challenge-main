@@ -44,7 +44,7 @@
     PORT=4000
     JWT_SECRET=seusegredo
     ```
-  - Rodar testes com um dos comandos seguintes
+  - Rodar testes com um dos comandos seguintes em /backend
     ```
     yarn run test
     yarn run test:coverage
