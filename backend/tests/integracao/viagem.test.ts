@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import moment from "moment";
-import type mongoose from "mongoose";
+import mongoose from "mongoose";
 import supertest from "supertest";
 import app from "../../src/app.js";
 import Motorista from "../../src/models/Motorista.js";
@@ -93,7 +93,7 @@ describe("Testes de integração - Viagens", () => {
 				"cnh.validade": moment().add(1, "year").hours(9).toDate(),
 			});
 			expect(response.status).toBe(400);
-			expect(response.body.erro).toContain("CNH do motorista");
+			expect(JSON.parse(response.text).erro).toContain("CNH do motorista");
 		});
 
 		it("deve retornar erro quando previsão de chegada for anterior à partida", async () => {
@@ -106,6 +106,78 @@ describe("Testes de integração - Viagens", () => {
 			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
 
 			expect(response.status).toBe(400);
+		});
+
+		it("deve retornar erro ao criar viagem com campos faltando", async () => {
+			const viagem = {
+				origem: faker.location.city(),
+				// missing required fields
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(400);
+		});
+
+		it("deve retornar erro ao criar viagem com status inválido", async () => {
+			const viagem = {
+				...gerarViagem(),
+				status: "InvalidStatus",
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(400);
+		});
+
+		it("deve retornar erro ao criar viagem com motorista inexistente", async () => {
+			const viagem = {
+				...gerarViagem(),
+				motorista: "64a7b7d77e71ee3e989f1234",
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(404);
+			expect(JSON.parse(response.text).erro).toBe("Motorista não encontrado");
+		});
+
+		it("deve retornar erro ao criar viagem com veículo inexistente", async () => {
+			const viagem = {
+				...gerarViagem(),
+				veiculo: "64a7b7d77e71ee3e989f1234",
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(404);
+			expect(JSON.parse(response.text).erro).toBe("Veículo não encontrado");
+		});
+
+		it("deve retornar erro ao criar viagem com data de partida no passado para status Planejada", async () => {
+			const viagem = {
+				...gerarViagem(),
+				dataPartida: moment().subtract(1, "day").hours(9).toDate(),
+				status: "Planejada",
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(400);
+			expect(JSON.parse(response.text).erro).toContain("data de partida não pode ser anterior");
+		});
+
+		it("deve retornar erro ao criar viagem com data de partida no futuro para status Em andamento", async () => {
+			const viagem = {
+				...gerarViagem(),
+				dataPartida: moment().add(1, "day").hours(9).toDate(),
+				status: "Em andamento",
+			};
+
+			const response = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			expect(response.status).toBe(400);
+			expect(JSON.parse(response.text).erro).toContain("data de partida não pode ser posterior");
 		});
 	});
 
@@ -133,6 +205,42 @@ describe("Testes de integração - Viagens", () => {
 			expect(response.status).toBe(200);
 			expect(response.body.dados[0].motoristaInfo.nome).toBe(motorista!.nome);
 		});
+
+		it("deve filtrar viagens por status", async () => {
+			const viagem = gerarViagem();
+			await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const response = await server.get(`/api/viagens?status=${viagem.status}`).set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados[0].status).toBe(viagem.status);
+		});
+
+		it("deve filtrar viagens por placa do veículo", async () => {
+			const viagem = gerarViagem();
+			await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const response = await server.get("/api/viagens?placa=ABC-1234").set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados[0].veiculoInfo.placa).toBe("ABC-1234");
+		});
+
+		it("deve retornar paginação correta", async () => {
+			// Create multiple trips
+			const viagens = Array(15)
+				.fill(null)
+				.map(() => gerarViagem());
+			await Promise.all(
+				viagens.map((viagem) => server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem)),
+			);
+
+			const response = await server.get("/api/viagens?page=2&limit=10").set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados.length).toBeLessThanOrEqual(10);
+			expect(response.body.paginacao.paginasTotal).toBe(2);
+		});
 	});
 
 	describe("GET /api/viagens/motorista/:id", () => {
@@ -145,6 +253,52 @@ describe("Testes de integração - Viagens", () => {
 
 			expect(response.status).toBe(200);
 			expect(response.body.dados[0].motorista).toBe(motoristaId);
+		});
+
+		it("deve retornar 404 quando não houver viagens para o motorista", async () => {
+			const response = await server
+				.get(`/api/viagens/motorista/${new mongoose.Types.ObjectId()}`)
+				.set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(404);
+			expect(JSON.parse(response.text).erro).toBe("Nenhuma viagem encontrada");
+		});
+
+		it("deve filtrar viagens do motorista por placa", async () => {
+			const viagem = gerarViagem();
+			await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const response = await server
+				.get(`/api/viagens/motorista/${motoristaId}?placa=ABC-1234`)
+				.set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados[0].veiculoInfo.placa).toBe("ABC-1234");
+		});
+	});
+
+	describe("GET /api/viagens/veiculo/:id", () => {
+		it("deve listar viagens do veículo", async () => {
+			const viagem = gerarViagem();
+			await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const response = await server.get(`/api/viagens/veiculo/${veiculoId}`).set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados[0].veiculo).toBe(veiculoId);
+		});
+
+		it("deve filtrar viagens do veículo por motorista", async () => {
+			const viagem = gerarViagem();
+			await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const motorista = await Motorista.findById(motoristaId);
+			const response = await server
+				.get(`/api/viagens/veiculo/${veiculoId}?motorista=${motorista!.nome}`)
+				.set("Authorization", `Bearer ${token}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body.dados[0].motoristaInfo.nome).toBe(motorista!.nome);
 		});
 	});
 
@@ -168,6 +322,35 @@ describe("Testes de integração - Viagens", () => {
 			expect(response.status).toBe(200);
 			expect(response.body.origem).toBe("Nova Origem");
 			expect(response.body.destino).toBe("Novo Destino");
+		});
+
+		it("deve retornar erro ao atualizar viagem inexistente", async () => {
+			const response = await server
+				.put(`/api/viagens/${new mongoose.Types.ObjectId()}`)
+				.set("Authorization", `Bearer ${token}`)
+				.send(gerarViagem());
+
+			expect(response.status).toBe(404);
+			expect(JSON.parse(response.text).erro).toBe("Viagem não encontrada");
+		});
+
+		it("deve atualizar status da viagem", async () => {
+			const viagem = gerarViagem();
+			const createResponse = await server.post("/api/viagens").set("Authorization", `Bearer ${token}`).send(viagem);
+
+			const novosDados = {
+				...viagem,
+				status: "Em andamento",
+				dataPartida: moment().subtract(1, "day").hours(9).toDate(),
+			};
+
+			const response = await server
+				.put(`/api/viagens/${createResponse.body._id}`)
+				.set("Authorization", `Bearer ${token}`)
+				.send(novosDados);
+
+			expect(response.status).toBe(200);
+			expect(response.body.status).toBe("Em andamento");
 		});
 	});
 
