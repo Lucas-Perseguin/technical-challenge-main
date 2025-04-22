@@ -2,6 +2,9 @@
   Passo a passo para inicialização do projeto.
   Obs: para descrição do desafio leia o arquivo [technicalChallenge.md](./technicalChallenge.md)
 
+## Link para documentação da API
+  https://documenter.getpostman.com/view/44177727/2sB2iwHFsd
+
 ## Execução
 - Criar arquivo .env na raiz do projeto com 
   ```
