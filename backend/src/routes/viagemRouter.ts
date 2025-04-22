@@ -11,8 +11,16 @@ viagemRouter.use(autenticarToken);
 viagemRouter.get("/", validarSchema(viagensSchemas.listarViagensSchema, "query"), viagemController.listar);
 viagemRouter.get("/:id", viagemController.buscarPorId);
 viagemRouter.delete("/:id", viagemController.deletar);
-viagemRouter.get("/motorista/:id", viagemController.listarViagensDoMotorista);
-viagemRouter.get("/veiculo/:id", viagemController.listarViagensDoVeiculo);
+viagemRouter.get(
+	"/motorista/:id",
+	validarSchema(viagensSchemas.listarViagensDoMotoristaSchema, "query"),
+	viagemController.listarViagensDoMotorista,
+);
+viagemRouter.get(
+	"/veiculo/:id",
+	validarSchema(viagensSchemas.listarViagensDoVeiculoSchema, "query"),
+	viagemController.listarViagensDoVeiculo,
+);
 viagemRouter.post("/", validarSchema(viagensSchemas.criarViagemSchema, "body"), validacoesGeraisViagem, viagemController.criar);
 viagemRouter.put(
 	"/:id",

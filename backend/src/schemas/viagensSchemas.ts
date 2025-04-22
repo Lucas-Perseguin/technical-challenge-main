@@ -31,8 +31,28 @@ const listarViagensSchema = Joi.object<ListarViagensType>({
 	limit: Joi.number(),
 });
 
+const listarViagensDoMotoristaSchema = Joi.object<Omit<ListarViagensType, "motorista">>({
+	origem: Joi.string().min(3).max(60),
+	destino: Joi.string().min(3).max(60),
+	placa: Joi.string().min(2),
+	status: Joi.string().valid("Planejada", "Em andamento", "Concluída", "Cancelada"),
+	page: Joi.number(),
+	limit: Joi.number(),
+});
+
+const listarViagensDoVeiculoSchema = Joi.object<Omit<ListarViagensType, "placa">>({
+	origem: Joi.string().min(3).max(60),
+	destino: Joi.string().min(3).max(60),
+	motorista: Joi.string().min(3).max(60),
+	status: Joi.string().valid("Planejada", "Em andamento", "Concluída", "Cancelada"),
+	page: Joi.number(),
+	limit: Joi.number(),
+});
+
 export const viagensSchemas = {
 	criarViagemSchema,
 	atualizarViagemSchema,
 	listarViagensSchema,
+	listarViagensDoMotoristaSchema,
+	listarViagensDoVeiculoSchema,
 };
