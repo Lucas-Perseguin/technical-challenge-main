@@ -50,7 +50,9 @@ export default function ListarMotoristas() {
 							<thead className="text-white">
 								<tr className="sticky top-0 bg-blue-600">
 									<th colSpan={2} className="bg-gray-100" />
-									<th colSpan={2}>CNH</th>
+									<th colSpan={2} className="border-1 border-gray-300">
+										CNH
+									</th>
 									<th className="bg-gray-100" />
 								</tr>
 								<tr className="sticky top-6 bg-blue-600">
