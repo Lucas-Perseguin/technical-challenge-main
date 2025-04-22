@@ -90,9 +90,15 @@ async function deletar(req: Request, res: Response, next: NextFunction) {
 		return;
 	}
 	try {
-		const usuario = await Usuario.findByIdAndDelete(req.params.id);
-		if (usuario) res.status(200).json("Usuário removido com sucesso");
-		else res.status(404).json({ erro: "Usuário não encontrado" });
+		const usuario = await Usuario.findById(req.params.id);
+		if (usuario) {
+			if (req.params.id !== req.app.locals._id && usuario.admin) {
+				res.status(403).json({ erro: "Permissão negada" });
+				return;
+			}
+			await Usuario.findByIdAndDelete(req.params.id);
+			res.status(200).json("Usuário removido com sucesso");
+		} else res.status(404).json({ erro: "Usuário não encontrado" });
 	} catch (error: any) {
 		res.status(500).json({ erro: error.message });
 	}
