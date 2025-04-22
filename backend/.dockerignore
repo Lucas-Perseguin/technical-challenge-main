@@ -3,3 +3,5 @@
 yarn.lock
 nodemon.json
 .gitignore
+jest.config.ts
+tests
